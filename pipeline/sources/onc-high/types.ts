@@ -1,4 +1,5 @@
 import { SOURCE_TYPES } from '@melo-rx/core'
+import type { InteractionSource } from '@melo-rx/core'
 
 export interface OncHighEntry {
   drug1: { rxcui: string; name: string }
@@ -21,12 +22,7 @@ export interface TransformedEntry {
   severity: 'contraindicated' | 'serious' | 'moderate' | 'minor' | 'monitor'
   mechanism: string
   management: string
-  sources: Array<{
-    name: string
-    url: string
-    type: string
-    accessed_date: string
-  }>
+  sources: InteractionSource[]
   isGenerated: false
   confidence: null
 }

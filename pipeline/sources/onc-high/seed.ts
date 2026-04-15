@@ -83,10 +83,10 @@ async function seed(): Promise<void> {
   }
 
   console.log(`Done. Inserted: ${inserted}, Skipped (already present): ${skipped}`)
-  process.exit(0)
+  await db.$client.end()
 }
 
 seed().catch((err: unknown) => {
   console.error('Seed failed:', err)
-  process.exit(1)
+  process.exitCode = 1
 })
