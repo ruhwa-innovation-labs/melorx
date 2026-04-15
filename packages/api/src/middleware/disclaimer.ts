@@ -42,7 +42,7 @@ export const disclaimerMiddleware: MiddlewareHandler = async (c, next) => {
  * Wraps an interaction result with disclaimer + meta.
  * Use this in every interaction route handler; the middleware is a safety net.
  */
-export function withDisclaimer<T extends Record<string, unknown>, M extends Record<string, unknown>>(
+export function withDisclaimer<T extends object, M extends Record<string, unknown>>(
   data: T,
   extraMeta: M = {} as M,
 ) {
