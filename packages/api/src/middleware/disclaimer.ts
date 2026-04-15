@@ -21,7 +21,8 @@ export const disclaimerMiddleware: MiddlewareHandler = async (c, next) => {
   try {
     body = JSON.parse(text) as Record<string, unknown>
   } catch {
-    c.res = new Response(text, { status, headers: { 'content-type': contentType } })
+    const newHeaders = new Headers(c.res.headers)
+    c.res = new Response(text, { status, headers: newHeaders })
     return
   }
 
@@ -29,9 +30,11 @@ export const disclaimerMiddleware: MiddlewareHandler = async (c, next) => {
     body['disclaimer'] = DISCLAIMER
   }
 
+  const newHeaders = new Headers(c.res.headers)
+  newHeaders.set('content-type', 'application/json; charset=UTF-8')
   c.res = new Response(JSON.stringify(body), {
     status,
-    headers: { 'content-type': 'application/json; charset=UTF-8' },
+    headers: newHeaders,
   })
 }
 
