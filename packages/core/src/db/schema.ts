@@ -9,6 +9,8 @@ import {
   timestamp,
   unique,
 } from 'drizzle-orm/pg-core'
+import type { DrugIdentifiers } from '../types/drug-concept.js'
+import type { InteractionSource } from '../types/drug-interaction.js'
 
 export const severityPgEnum = pgEnum('severity_enum', [
   'contraindicated',
@@ -22,8 +24,8 @@ export const drugConcept = pgTable('drug_concept', {
   id: uuid('id').defaultRandom().primaryKey(),
   rxcui: varchar('rxcui').unique().notNull(),
   name: varchar('name').notNull(),
-  drugClass: varchar('drug_class').array().default([]),
-  identifiers: jsonb('identifiers').notNull().default({}),
+  drugClass: varchar('drug_class').array().notNull().default([]),
+  identifiers: jsonb('identifiers').$type<DrugIdentifiers>().notNull().default({ ndc: [], atc: null, drugbank: null, brand_names: [] }),
 })
 
 export const drugClassInteraction = pgTable(
@@ -35,7 +37,7 @@ export const drugClassInteraction = pgTable(
     severity: severityPgEnum('severity').notNull(),
     mechanism: varchar('mechanism'),
     management: varchar('management'),
-    sources: jsonb('sources').array().notNull().default([]),
+    sources: jsonb('sources').$type<InteractionSource>().array().notNull().default([]),
   },
   (table) => ({
     classPairUnique: unique().on(table.classA, table.classB),
@@ -55,11 +57,11 @@ export const drugInteraction = pgTable(
     severity: severityPgEnum('severity').notNull(),
     mechanism: varchar('mechanism'),
     management: varchar('management'),
-    sources: jsonb('sources').array().notNull().default([]),
+    sources: jsonb('sources').$type<InteractionSource>().array().notNull().default([]),
     classRuleId: uuid('class_rule_id').references(
       () => drugClassInteraction.id,
     ),
-    isGenerated: boolean('is_generated').default(false),
+    isGenerated: boolean('is_generated').notNull().default(false),
     confidence: numeric('confidence', { precision: 3, scale: 2 }),
     createdAt: timestamp('created_at').defaultNow().notNull(),
     updatedAt: timestamp('updated_at').defaultNow().notNull(),
