@@ -14,7 +14,7 @@
     "lint": "pnpm -r lint",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
-    "db:seed": "tsx pipeline/sources/onc-high/seed.ts"
+    "db:seed": "tsx --env-file=.env pipeline/sources/onc-high/seed.ts"
   },
   "devDependencies": {
     "drizzle-kit": "^0.30.0",

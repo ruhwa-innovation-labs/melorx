@@ -1,0 +1,67 @@
+[
+  {
+    "drug1": { "rxcui": "11289", "name": "warfarin" },
+    "drug2": { "rxcui": "1191", "name": "aspirin" },
+    "severity": "serious",
+    "mechanism": "Aspirin inhibits platelet aggregation and may displace warfarin from plasma protein binding, increasing anticoagulant effect and bleeding risk.",
+    "management": "Avoid concurrent use. If combination is necessary, monitor INR closely and watch for signs of bleeding.",
+    "source": {
+      "name": "ONCHigh",
+      "url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3817532/",
+      "type": "clinical_guideline",
+      "accessed_date": "2026-04-15"
+    }
+  },
+  {
+    "drug1": { "rxcui": "36567", "name": "simvastatin" },
+    "drug2": { "rxcui": "703", "name": "amiodarone" },
+    "severity": "contraindicated",
+    "mechanism": "Amiodarone inhibits CYP2C9 and CYP3A4, significantly increasing simvastatin plasma levels and risk of myopathy and rhabdomyolysis.",
+    "management": "Contraindicated. Use an alternative statin not metabolised by CYP3A4 (pravastatin, rosuvastatin) or limit simvastatin to 10mg/day.",
+    "source": {
+      "name": "ONCHigh",
+      "url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3817532/",
+      "type": "clinical_guideline",
+      "accessed_date": "2026-04-15"
+    }
+  },
+  {
+    "drug1": { "rxcui": "856584", "name": "methotrexate" },
+    "drug2": { "rxcui": "5640", "name": "ibuprofen" },
+    "severity": "serious",
+    "mechanism": "NSAIDs reduce renal clearance of methotrexate by inhibiting prostaglandin synthesis, potentially leading to methotrexate toxicity.",
+    "management": "Avoid concurrent use at high methotrexate doses. If unavoidable, monitor methotrexate levels and CBC. Hold NSAIDs 24-48 hours before and after methotrexate administration.",
+    "source": {
+      "name": "ONCHigh",
+      "url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3817532/",
+      "type": "clinical_guideline",
+      "accessed_date": "2026-04-15"
+    }
+  },
+  {
+    "drug1": { "rxcui": "41493", "name": "tramadol" },
+    "drug2": { "rxcui": "36437", "name": "sertraline" },
+    "severity": "serious",
+    "mechanism": "Concurrent serotonergic activity from tramadol and SSRIs increases risk of serotonin syndrome. Tramadol also lowers seizure threshold synergistically with SSRIs.",
+    "management": "Monitor closely for signs of serotonin syndrome (fever, agitation, tremor, clonus). Consider an alternative non-serotonergic analgesic.",
+    "source": {
+      "name": "ONCHigh",
+      "url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3817532/",
+      "type": "clinical_guideline",
+      "accessed_date": "2026-04-15"
+    }
+  },
+  {
+    "drug1": { "rxcui": "5640", "name": "ibuprofen" },
+    "drug2": { "rxcui": "29046", "name": "lisinopril" },
+    "severity": "significant",
+    "mechanism": "NSAIDs antagonise the antihypertensive effect of ACE inhibitors via prostaglandin-mediated inhibition of renal vasodilation.",
+    "management": "Monitor blood pressure. Consider acetaminophen as an alternative analgesic.",
+    "source": {
+      "name": "ONCHigh",
+      "url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3817532/",
+      "type": "clinical_guideline",
+      "accessed_date": "2026-04-15"
+    }
+  }
+]
