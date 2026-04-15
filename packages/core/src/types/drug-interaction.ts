@@ -1,9 +1,18 @@
 import type { Severity } from './severity.js'
 
+export const SOURCE_TYPES = [
+  'clinical_guideline',
+  'fda_label',
+  'peer_reviewed_study',
+  'clinical_pharmacist_review',
+] as const
+
+export type SourceType = (typeof SOURCE_TYPES)[number]
+
 export interface InteractionSource {
   name: string
   url: string
-  type: 'clinical_guideline' | 'fda_label' | 'peer_reviewed_study' | 'clinical_pharmacist_review'
+  type: SourceType
   accessed_date: string
 }
 
