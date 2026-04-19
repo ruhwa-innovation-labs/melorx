@@ -1,0 +1,314 @@
+{
+  "source": {
+    "name": "ONCHigh",
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3422823/",
+    "type": "clinical_guideline",
+    "accessed_date": "2026-04-18",
+    "citation": "Phansalkar S, Desai AA, Bell D, et al. High-priority drug-drug interactions for use in electronic health records. J Am Med Inform Assoc. 2012;19(5):735-743. doi:10.1136/amiajnl-2011-000612"
+  },
+  "deferred_rules": [
+    {
+      "rule_number": 21,
+      "object_class": "QT prolonging agents",
+      "precipitant_class": "QT prolonging agents",
+      "reason": "Open-ended class requires an authoritative QT-prolonger list (CredibleMeds QTdrugs); ingested as a separate source."
+    }
+  ],
+  "rules": [
+    {
+      "rule_number": 3,
+      "object_class": "Amphetamine derivatives",
+      "object_drugs": [
+        "Dexmethylphenidate",
+        "Dextroamphetamine",
+        "Methylphenidate",
+        "Lisdexamfetamine",
+        "Methamphetamine",
+        "Phendimetrazine",
+        "Pseudoephedrine",
+        "Amphetamine",
+        "Benzphetamine",
+        "Diethylpropion",
+        "Phentermine",
+        "Atomoxetine"
+      ],
+      "precipitant_groups": [
+        {
+          "class": "MAO inhibitors",
+          "drugs": ["Tranylcypromine", "Phenelzine", "Isocarboxazid", "Procarbazine", "Selegiline"]
+        }
+      ],
+      "severity": "contraindicated",
+      "mechanism": "Monoamine oxidase inhibitors block catecholamine metabolism, while amphetamine-type stimulants and related indirect sympathomimetics release catecholamines; concurrent exposure elevates synaptic norepinephrine and dopamine and can precipitate hypertensive crisis.",
+      "management": "Stimulant prescribing information labels concurrent MAOI use as contraindicated and specifies a 14-day washout after MAOI discontinuation before initiating the stimulant."
+    },
+    {
+      "rule_number": 4,
+      "object_class": "Atazanavir",
+      "object_drugs": ["Atazanavir"],
+      "precipitant_groups": [
+        {
+          "class": "Proton pump inhibitors",
+          "drugs": ["Omeprazole", "Lansoprazole", "Pantoprazole", "Rabeprazole", "Esomeprazole"]
+        }
+      ],
+      "severity": "serious",
+      "mechanism": "Atazanavir dissolution requires an acidic gastric environment; proton pump inhibitors elevate gastric pH, substantially reducing atazanavir absorption and plasma concentrations with risk of sub-therapeutic antiretroviral exposure and virologic failure.",
+      "management": "Atazanavir prescribing information labels concomitant PPI use as not recommended in treatment-experienced patients and contraindicated in PPI-naive patients; when use is unavoidable, PPI dose is limited and dosing is separated in time with ritonavir boosting."
+    },
+    {
+      "rule_number": 6,
+      "object_class": "Febuxostat",
+      "object_drugs": ["Febuxostat"],
+      "precipitant_groups": [
+        {
+          "class": "Thiopurines",
+          "drugs": ["Azathioprine", "Mercaptopurine"]
+        }
+      ],
+      "severity": "contraindicated",
+      "mechanism": "Febuxostat inhibits xanthine oxidase, which normally inactivates the active metabolites of azathioprine and mercaptopurine; coadministration can increase thiopurine exposure and produce severe myelosuppression.",
+      "management": "Febuxostat prescribing information labels concurrent azathioprine or mercaptopurine use as contraindicated."
+    },
+    {
+      "rule_number": 8,
+      "object_class": "Serotonergic antidepressants (SSRIs/SNRIs/related)",
+      "object_drugs": [
+        "Fluoxetine",
+        "Paroxetine",
+        "Citalopram",
+        "Escitalopram",
+        "Sertraline",
+        "Fluvoxamine",
+        "Duloxetine",
+        "Nefazodone",
+        "Desvenlafaxine",
+        "Milnacipran",
+        "Venlafaxine"
+      ],
+      "precipitant_groups": [
+        {
+          "class": "MAO inhibitors",
+          "drugs": ["Tranylcypromine", "Phenelzine", "Isocarboxazid", "Procarbazine", "Selegiline"]
+        }
+      ],
+      "severity": "contraindicated",
+      "mechanism": "Serotonergic antidepressants elevate synaptic serotonin; concurrent monoamine oxidase inhibition compounds serotonergic activity and can precipitate serotonin syndrome.",
+      "management": "Serotonergic antidepressant prescribing information labels concurrent MAOI use as contraindicated and specifies a 14-day washout in each direction; fluoxetine requires a 5-week washout before initiating an MAOI owing to the long half-life of norfluoxetine."
+    },
+    {
+      "rule_number": 11,
+      "object_class": "Irinotecan",
+      "object_drugs": ["Irinotecan"],
+      "precipitant_groups": [
+        {
+          "class": "CYP3A4 inhibitors (protease inhibitors)",
+          "drugs": [
+            "Ritonavir",
+            "Nelfinavir",
+            "Atazanavir",
+            "Indinavir",
+            "Saquinavir",
+            "Amprenavir",
+            "Darunavir",
+            "Lopinavir",
+            "Tipranavir",
+            "Fosamprenavir"
+          ]
+        },
+        {
+          "class": "CYP3A4 inhibitors (macrolides and related)",
+          "drugs": ["Clarithromycin", "Erythromycin", "Telithromycin", "Amiodarone", "Verapamil", "Diltiazem"]
+        },
+        {
+          "class": "CYP3A4 inhibitors (azoles and related)",
+          "drugs": ["Ketoconazole", "Itraconazole", "Fluconazole", "Voriconazole", "Nefazodone", "Aprepitant", "Cimetidine"]
+        }
+      ],
+      "severity": "serious",
+      "mechanism": "Irinotecan is activated to SN-38 and subsequently glucuronidated by UGT1A1; strong CYP3A4 inhibitors can elevate irinotecan and SN-38 plasma exposure, increasing risk of severe neutropenia and diarrhea.",
+      "management": "Irinotecan prescribing information labels avoidance of strong CYP3A4 inhibitors during treatment or, when unavoidable, dose reduction with close monitoring for myelosuppression and gastrointestinal toxicity."
+    },
+    {
+      "rule_number": 16,
+      "object_class": "Opioid and opioid-like analgesics with serotonergic activity",
+      "object_drugs": ["Meperidine", "Methadone", "Tapentadol", "Fentanyl", "Tramadol", "Dextromethorphan"],
+      "precipitant_groups": [
+        {
+          "class": "MAO inhibitors",
+          "drugs": ["Tranylcypromine", "Phenelzine", "Isocarboxazid", "Selegiline", "Procarbazine"]
+        }
+      ],
+      "severity": "contraindicated",
+      "mechanism": "Meperidine, tramadol, tapentadol, methadone, fentanyl, and dextromethorphan have serotonergic activity; concurrent monoamine oxidase inhibition can precipitate serotonin syndrome, with additional risk of hypertensive crisis reported historically with meperidine.",
+      "management": "Labels for meperidine, tramadol, tapentadol, fentanyl, methadone, and dextromethorphan-containing products specify contraindication with MAOIs and a 14-day washout in each direction."
+    },
+    {
+      "rule_number": 20,
+      "object_class": "Tricyclic antidepressants",
+      "object_drugs": [
+        "Amitriptyline",
+        "Clomipramine",
+        "Desipramine",
+        "Doxepin",
+        "Imipramine",
+        "Nortriptyline",
+        "Protriptyline",
+        "Trimipramine"
+      ],
+      "precipitant_groups": [
+        {
+          "class": "MAO inhibitors",
+          "drugs": ["Tranylcypromine", "Phenelzine", "Isocarboxazid", "Selegiline", "Procarbazine"]
+        }
+      ],
+      "severity": "contraindicated",
+      "mechanism": "Tricyclic antidepressants inhibit serotonin and norepinephrine reuptake; concurrent monoamine oxidase inhibition compounds monoaminergic activity and can precipitate hypertensive crisis and serotonin syndrome.",
+      "management": "Tricyclic antidepressant prescribing information labels concurrent MAOI use as contraindicated and specifies a 14-day washout in each direction."
+    },
+    {
+      "rule_number": 22,
+      "object_class": "Ramelteon",
+      "object_drugs": ["Ramelteon"],
+      "precipitant_groups": [
+        {
+          "class": "Strong CYP1A2 inhibitors",
+          "drugs": ["Fluvoxamine", "Amiodarone", "Ticlopidine", "Ciprofloxacin"]
+        }
+      ],
+      "severity": "contraindicated",
+      "mechanism": "Ramelteon is metabolized primarily by CYP1A2; coadministration with fluvoxamine has been reported to increase ramelteon AUC approximately 190-fold.",
+      "management": "Ramelteon prescribing information labels concurrent fluvoxamine use as contraindicated and advises caution with other strong CYP1A2 inhibitors."
+    },
+    {
+      "rule_number": 23,
+      "object_class": "HIV protease inhibitors",
+      "object_drugs": [
+        "Ritonavir",
+        "Amprenavir",
+        "Darunavir",
+        "Fosamprenavir",
+        "Indinavir",
+        "Lopinavir",
+        "Nelfinavir",
+        "Saquinavir",
+        "Tipranavir"
+      ],
+      "precipitant_groups": [
+        {
+          "class": "Strong CYP3A4 inducers",
+          "drugs": ["Bosentan", "Rifapentine", "Carbamazepine", "Rifabutin", "Rifampin", "St John's wort"]
+        }
+      ],
+      "severity": "serious",
+      "mechanism": "Strong CYP3A4 inducers accelerate protease inhibitor metabolism, reducing antiretroviral plasma exposure and risking virologic failure and resistance.",
+      "management": "Protease inhibitor prescribing information advises against coadministration with strong CYP3A4 inducers such as rifampin, rifapentine, and St John's wort; alternative therapy or, for some combinations, dose adjustment with rifabutin is specified."
+    },
+    {
+      "rule_number": 25,
+      "object_class": "Simvastatin and lovastatin",
+      "object_drugs": ["Simvastatin", "Lovastatin"],
+      "precipitant_groups": [
+        {
+          "class": "CYP3A4 inhibitors (protease inhibitors)",
+          "drugs": [
+            "Saquinavir",
+            "Tipranavir",
+            "Ritonavir",
+            "Nelfinavir",
+            "Atazanavir",
+            "Amprenavir",
+            "Darunavir",
+            "Lopinavir",
+            "Indinavir"
+          ]
+        },
+        {
+          "class": "CYP3A4 inhibitors (macrolides and related)",
+          "drugs": ["Clarithromycin", "Erythromycin", "Telithromycin", "Amiodarone", "Verapamil", "Diltiazem"]
+        },
+        {
+          "class": "CYP3A4 inhibitors (azoles and related)",
+          "drugs": ["Ketoconazole", "Itraconazole", "Fluconazole", "Voriconazole", "Nefazodone"]
+        }
+      ],
+      "severity": "contraindicated",
+      "mechanism": "Simvastatin and lovastatin are extensively metabolized by CYP3A4; strong inhibitors elevate statin plasma exposure and risk of myopathy and rhabdomyolysis.",
+      "management": "Simvastatin and lovastatin prescribing information labels concurrent use with strong CYP3A4 inhibitors (including HIV protease inhibitors, clarithromycin, telithromycin, itraconazole, ketoconazole, nefazodone, cobicistat) as contraindicated."
+    },
+    {
+      "rule_number": 27,
+      "object_class": "Ergot alkaloids and derivatives",
+      "object_drugs": ["Ergotamine", "Methylergonovine", "Dihydroergotamine", "Ergonovine"],
+      "precipitant_groups": [
+        {
+          "class": "CYP3A4 inhibitors (protease inhibitors)",
+          "drugs": [
+            "Indinavir",
+            "Saquinavir",
+            "Tipranavir",
+            "Ritonavir",
+            "Nelfinavir",
+            "Atazanavir",
+            "Amprenavir",
+            "Darunavir",
+            "Lopinavir"
+          ]
+        },
+        {
+          "class": "CYP3A4 inhibitors (macrolides)",
+          "drugs": ["Clarithromycin", "Erythromycin", "Telithromycin"]
+        },
+        {
+          "class": "CYP3A4 inhibitors (azoles)",
+          "drugs": ["Ketoconazole", "Itraconazole", "Voriconazole"]
+        }
+      ],
+      "severity": "contraindicated",
+      "mechanism": "Ergot alkaloid metabolism is CYP3A4-dependent; concurrent strong inhibition elevates ergot exposure with risk of ergotism, peripheral vasospasm, and tissue ischemia.",
+      "management": "Ergotamine and dihydroergotamine prescribing information labels concurrent use with strong CYP3A4 inhibitors (HIV protease inhibitors, macrolide antibiotics, and azole antifungals) as contraindicated."
+    },
+    {
+      "rule_number": 28,
+      "object_class": "Tizanidine",
+      "object_drugs": ["Tizanidine"],
+      "precipitant_groups": [
+        {
+          "class": "CYP1A2 inhibitors",
+          "drugs": ["Ciprofloxacin", "Fluvoxamine", "Mexiletine", "Propafenone", "Zileuton", "Amiodarone", "Ticlopidine"]
+        }
+      ],
+      "severity": "contraindicated",
+      "mechanism": "Tizanidine is metabolized primarily by CYP1A2; concurrent CYP1A2 inhibitors markedly increase tizanidine plasma exposure with risk of severe hypotension and sedation.",
+      "management": "Tizanidine prescribing information labels concurrent use with fluvoxamine or ciprofloxacin as contraindicated and advises avoidance of other CYP1A2 inhibitors."
+    },
+    {
+      "rule_number": 30,
+      "object_class": "Tranylcypromine",
+      "object_drugs": ["Tranylcypromine"],
+      "precipitant_groups": [
+        {
+          "class": "MAO inhibitors",
+          "drugs": ["Procarbazine"]
+        }
+      ],
+      "severity": "contraindicated",
+      "mechanism": "Both agents inhibit monoamine oxidase; concurrent exposure amplifies catecholamine- and serotonin-mediated effects and can precipitate hypertensive crisis and serotonin syndrome.",
+      "management": "Concurrent use of two monoamine oxidase inhibitors is contraindicated per prescribing information; a 14-day washout between agents is specified."
+    },
+    {
+      "rule_number": 31,
+      "object_class": "Triptans (MAO-A metabolized)",
+      "object_drugs": ["Sumatriptan", "Zolmitriptan", "Rizatriptan"],
+      "precipitant_groups": [
+        {
+          "class": "MAO inhibitors",
+          "drugs": ["Tranylcypromine", "Phenelzine", "Isocarboxazid", "Moclobemide", "Methylene blue"]
+        }
+      ],
+      "severity": "contraindicated",
+      "mechanism": "Sumatriptan, zolmitriptan, and rizatriptan are partially metabolized by monoamine oxidase type A; concurrent MAOI use elevates triptan exposure and compounds serotonergic activity, with risk of serotonin syndrome.",
+      "management": "Prescribing information for MAO-A metabolized triptans labels concurrent MAOI use as contraindicated and specifies a 2-week washout in each direction."
+    }
+  ]
+}

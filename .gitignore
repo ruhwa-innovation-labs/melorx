@@ -4,3 +4,7 @@ dist/
 *.log
 .DS_Store
 *.tsbuildinfo
+
+# Bulk source data — downloaded, not committed
+pipeline/sources/*/raw/
+pipeline/resolver/raw/

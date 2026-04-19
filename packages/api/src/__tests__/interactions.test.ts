@@ -81,4 +81,24 @@ describe('GET /v1/interactions', () => {
     }
     expect(body.data.interactions[0]?.sources).toHaveLength(1)
   })
+
+  it('expands class rules at query time — simvastatin + clarithromycin is contraindicated', async () => {
+    // Requires `pnpm db:seed:classes` — simvastatin picks up class "Simvastatin and lovastatin"
+    // and clarithromycin picks up "CYP3A4 inhibitors (macrolides and related)"; rule 25 covers the pair.
+    const res = await app.request('/v1/interactions?drug1=simvastatin&drug2=clarithromycin')
+    expect(res.status).toBe(200)
+    const body = await res.json() as {
+      data: {
+        drug1: { classes: string[] }
+        drug2: { classes: string[] }
+        interactions: Array<{ severity: string; sources: Array<{ name: string }> }>
+      }
+    }
+    expect(body.data.drug1.classes).toContain('Simvastatin and lovastatin')
+    expect(body.data.drug2.classes).toContain('CYP3A4 inhibitors (macrolides and related)')
+    expect(body.data.interactions.length).toBeGreaterThan(0)
+    const severities = body.data.interactions.map((i) => i.severity)
+    expect(severities).toContain('contraindicated')
+    expect(body.data.interactions[0]?.sources[0]?.name).toBe('ONCHigh')
+  })
 })
