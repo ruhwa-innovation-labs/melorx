@@ -7,6 +7,10 @@ import {
   resolveIngredient,
   type IngredientRecord,
 } from '../../resolver/rxnorm-ingredients.js'
+import {
+  loadIdentifierIndex,
+  type IngredientIdentifiers,
+} from '../../resolver/rxnorm-identifiers.js'
 import { classRulesFileSchema } from './class-schemas.js'
 import { collectDrugMemberships } from './class-drugs.js'
 import { toClassInteractionRows } from './class-transform.js'
@@ -26,10 +30,20 @@ async function seed(): Promise<void> {
   const ingredientIndex = await loadIngredientIndex()
   logger.info(`Loaded RxNorm ingredient index (${ingredientIndex.size} entries)`)
 
-  const memberships = collectDrugMemberships(file)
-  const conceptResult = await upsertDrugConcepts(db, memberships, ingredientIndex)
+  const identifierIndex = await loadIdentifierIndex()
   logger.info(
-    `drug_concept: inserted ${conceptResult.inserted}, classes-updated ${conceptResult.updated}, unresolved ${conceptResult.unresolved.length}`,
+    `Loaded RxNorm identifier index (${identifierIndex.size} ingredient RxCUIs with ATC and/or brand names)`,
+  )
+
+  const memberships = collectDrugMemberships(file)
+  const conceptResult = await upsertDrugConcepts(
+    db,
+    memberships,
+    ingredientIndex,
+    identifierIndex,
+  )
+  logger.info(
+    `drug_concept: inserted ${conceptResult.inserted}, classes-updated ${conceptResult.updated}, identifiers-updated ${conceptResult.identifiersUpdated}, unresolved ${conceptResult.unresolved.length}`,
   )
   if (conceptResult.unresolved.length > 0) {
     logger.warn({ unresolved: conceptResult.unresolved }, 'Drugs without RxNorm ingredient match')
@@ -56,19 +70,26 @@ function loadClassRules(): ClassRulesFile {
 interface ConceptResult {
   inserted: number
   updated: number
+  identifiersUpdated: number
   unresolved: string[]
 }
 
 async function upsertDrugConcepts(
   db: ReturnType<typeof createDb>,
   memberships: Map<string, Set<string>>,
-  index: Map<string, IngredientRecord>,
+  ingredientIndex: Map<string, IngredientRecord>,
+  identifierIndex: Map<string, IngredientIdentifiers>,
 ): Promise<ConceptResult> {
-  const result: ConceptResult = { inserted: 0, updated: 0, unresolved: [] }
+  const result: ConceptResult = {
+    inserted: 0,
+    updated: 0,
+    identifiersUpdated: 0,
+    unresolved: [],
+  }
 
   const byRxcui = new Map<string, { name: string; classes: Set<string> }>()
   for (const [rawName, classSet] of memberships) {
-    const record = resolveIngredient(index, rawName)
+    const record = resolveIngredient(ingredientIndex, rawName)
     if (!record) {
       result.unresolved.push(rawName)
       continue
@@ -82,8 +103,12 @@ async function upsertDrugConcepts(
   }
 
   for (const [rxcui, entry] of byRxcui) {
+    const identifiers = identifierIndex.get(rxcui)
     const existing = await db
-      .select({ drugClass: drugConcept.drugClass })
+      .select({
+        drugClass: drugConcept.drugClass,
+        identifiers: drugConcept.identifiers,
+      })
       .from(drugConcept)
       .where(eq(drugConcept.rxcui, rxcui))
       .limit(1)
@@ -93,7 +118,12 @@ async function upsertDrugConcepts(
         rxcui,
         name: entry.name,
         drugClass: [...entry.classes].sort(),
-        identifiers: { ndc: [], atc: null, drugbank: null, brand_names: [] },
+        identifiers: {
+          ndc: [],
+          atc: identifiers?.atc ?? null,
+          drugbank: null,
+          brand_names: identifiers?.brand_names ?? [],
+        },
       })
       result.inserted++
       continue
@@ -102,16 +132,74 @@ async function upsertDrugConcepts(
     const current = new Set(existing[0]?.drugClass ?? [])
     const before = current.size
     for (const c of entry.classes) current.add(c)
-    if (current.size !== before) {
+    const classesChanged = current.size !== before
+
+    const existingIdentifiers = existing[0]?.identifiers
+    const mergedIdentifiers = mergeIdentifiers(existingIdentifiers, identifiers)
+    const identifiersChanged =
+      mergedIdentifiers !== null &&
+      !identifiersEqual(existingIdentifiers, mergedIdentifiers)
+
+    if (classesChanged || identifiersChanged) {
+      const update: { drugClass?: string[]; identifiers?: Identifiers } = {}
+      if (classesChanged) update.drugClass = [...current].sort()
+      if (identifiersChanged && mergedIdentifiers !== null) {
+        update.identifiers = mergedIdentifiers
+      }
+
       await db
         .update(drugConcept)
-        .set({ drugClass: [...current].sort() })
+        .set(update)
         .where(eq(drugConcept.rxcui, rxcui))
-      result.updated++
+
+      if (classesChanged) result.updated++
+      if (identifiersChanged) result.identifiersUpdated++
     }
   }
 
   return result
+}
+
+type Identifiers = {
+  ndc: string[]
+  atc: string | null
+  drugbank: string | null
+  brand_names: string[]
+}
+
+function mergeIdentifiers(
+  existing: Identifiers | undefined,
+  incoming: IngredientIdentifiers | undefined,
+): Identifiers | null {
+  if (!incoming) return null
+  const base: Identifiers = existing ?? {
+    ndc: [],
+    atc: null,
+    drugbank: null,
+    brand_names: [],
+  }
+  const brandMerged = new Set<string>([...base.brand_names, ...incoming.brand_names])
+  return {
+    ndc: base.ndc,
+    atc: base.atc ?? incoming.atc,
+    drugbank: base.drugbank,
+    brand_names: [...brandMerged].sort(),
+  }
+}
+
+function identifiersEqual(
+  a: Identifiers | undefined,
+  b: Identifiers,
+): boolean {
+  if (!a) return false
+  if (a.atc !== b.atc) return false
+  if (a.drugbank !== b.drugbank) return false
+  if (a.ndc.length !== b.ndc.length) return false
+  if (a.brand_names.length !== b.brand_names.length) return false
+  for (let i = 0; i < a.brand_names.length; i++) {
+    if (a.brand_names[i] !== b.brand_names[i]) return false
+  }
+  return true
 }
 
 interface ClassResult {
