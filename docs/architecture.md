@@ -15,13 +15,14 @@ melo-rx is a **modular monolith** organized as a **pnpm workspace**. All package
 │  ┌─────────────────────────────────────────────────────────────────────┐    │
 │  │                        Ingestion Pipeline                           │    │
 │  │                                                                     │    │
-│  │   ┌──────────────┐  ┌──────────────┐  ┌──────────────┐            │    │
-│  │   │  onc-high/   │  │  openfda/    │  │   ndf-rt/    │            │    │
-│  │   │  ETL adapter │  │  bulk label  │  │  VA adapter  │            │    │
-│  │   │  (437 pairs) │  │  + NLP       │  │  (~3k pairs) │            │    │
-│  │   └──────┬───────┘  └──────┬───────┘  └──────┬───────┘            │    │
-│  │          │                  │                  │                   │    │
-│  │          └──────────────────┴──────────────────┘                   │    │
+│  │   ┌──────────────┐  ┌──────────────┐                              │    │
+│  │   │  onc-high/   │  │  openfda/    │                              │    │
+│  │   │  ETL adapter │  │  bulk label  │                              │    │
+│  │   │  + class     │  │  + NLP       │                              │    │
+│  │   │  rules       │  │  (v0.3)      │                              │    │
+│  │   └──────┬───────┘  └──────┬───────┘                              │    │
+│  │          │                  │                                     │    │
+│  │          └──────────────────┘                                     │    │
 │  │                             │                                      │    │
 │  │                    ┌────────▼────────┐                             │    │
 │  │                    │    Resolver     │                             │    │
@@ -86,11 +87,14 @@ melo-rx/
 │
 ├── pipeline/
 │   ├── sources/
-│   │   ├── onc-high/  # ONCHigh XML ETL adapter — seeds 437 clinician-curated pairs (v0.1)
-│   │   ├── openfda/   # OpenFDA bulk label download + Natural.js/regex NLP extractor (v0.3)
-│   │   └── ndf-rt/    # NDF-RT VA adapter — ~3,000 additional pairs (v0.2)
+│   │   ├── onc-high/  # ONCHigh ETL adapter — curated pairs (v0.1) + class rules (v0.2)
+│   │   └── openfda/   # OpenFDA bulk label download + Natural.js/regex NLP extractor (v0.3)
 │   └── resolver/      # Identifier normalization service
-│                      # Resolves RxCUI ↔ NDC ↔ ATC ↔ brand name via RxNorm API + local cache
+│                      # Resolves RxCUI ↔ NDC ↔ ATC ↔ brand name via local RxNorm ingest
+│                      # (RXNCONSO, RXNSAT, RXNREL) populated at seed time
+│
+│  Note: NDF-RT adapter was removed per ADR-003 — NDF-RT is absent from the current
+│  RxNorm release; class-rule expansion (v0.2) and OpenFDA NLP (v0.3) cover the gap.
 │
 ├── db/
 │   └── migrations/    # Drizzle ORM migration files (plain .sql — human-readable)

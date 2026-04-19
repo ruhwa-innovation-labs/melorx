@@ -334,7 +334,7 @@ CREATE INDEX drug_interaction_confidence_idx
 - Constraint: None (nullable); valid range 0.00 to 1.00
 - Required: No
 - Description: Confidence score assigned by the OpenFDA NLP extraction pipeline. NULL for
-  curated records (ONCHigh, NDF-RT, community PRs that passed clinical review). A NULL value
+  curated records (ONCHigh pairs, class-rule expansions, community PRs that passed clinical review). A NULL value
   is a positive assertion that confidence scoring is not applicable, not a missing value.
   Scores below 0.75 are not served in production API responses; those records are placed in a
   review queue. The partial index on `confidence WHERE confidence IS NOT NULL` supports

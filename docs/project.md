@@ -74,7 +74,7 @@ health utilities) and the specific characteristics of the healthcare developer e
 
 | Metric | Target (12 months post-v1.0) | Rationale |
 |--------|------------------------------|-----------|
-| DDI pairs covered | 5,000+ (v1.0 launch) | ONCHigh (437) + NDF-RT (~3k) + curated OpenFDA subset gets us there with moderate NLP confidence threshold |
+| DDI pairs covered | 5,000+ (v1.0 launch) | Concrete curated pairs + class-rule expansion from ONCHigh (14 rules → hundreds of concrete pairs at query time) + OpenFDA NLP long tail. NDF-RT removed — see [ADR-003](plans/adr-003-ndf-rt-pivot.md) |
 | Hosted demo API uptime | 99.5% | Standard for developer-facing APIs; below 99% degrades developer trust before adoption |
 | npm `@melo-rx/client` weekly downloads | 1,000+ | Conservative for a healthcare utility — comparable health npm packages (fhir.js, hl7parser) reach 500–2,000/wk within Year 1 |
 | GitHub stars | 500+ | Achievable through HackerNews launch post + healthcare dev communities; used as social proof in downstream README |
@@ -108,8 +108,8 @@ the data pipeline, the query engine, and the delivery surface.
 │  │  Adapters   │    │  Service         │    │  @melo-rx/    │  │
 │  │  ONCHigh    │    │  RxCUI ↔ NDC ↔   │    │  client       │  │
 │  │  OpenFDA    │    │  ATC ↔ brand     │    │               │  │
-│  │  NDF-RT     │    └──────────────────┘    └───────────────┘  │
-│  └─────────────┘                                                │
+│  └─────────────┘    └──────────────────┘    └───────────────┘  │
+│                                                                 │
 └──────────────────────────────────────────────────────────────────┘
 ```
 
@@ -123,10 +123,9 @@ melo-rx/
 │   └── client/        # npm package (@melo-rx/client)
 ├── pipeline/
 │   ├── sources/
-│   │   ├── onc-high/  # ONCHigh ETL adapter
-│   │   ├── openfda/   # OpenFDA bulk label adapter + NLP extractor
-│   │   └── ndf-rt/    # NDF-RT VA adapter
-│   └── resolver/      # Identifier normalization service
+│   │   ├── onc-high/  # ONCHigh ETL adapter (curated pairs + class rules)
+│   │   └── openfda/   # OpenFDA bulk label adapter + NLP extractor (v0.3)
+│   └── resolver/      # Identifier normalization service (RxCUI / NDC / brand / ATC)
 ├── db/
 │   └── migrations/    # Drizzle ORM migration files
 ├── docs/
@@ -225,10 +224,12 @@ CREATE TABLE drug_interaction (
 
 | Phase | Source | Pairs | Quality | License | Action |
 |-------|--------|-------|---------|---------|--------|
-| v0.1 | **ONCHigh** | 437 | Clinician-curated | Public domain | Seed database |
-| v0.2 | **NDF-RT (VA/NLM)** | ~3,000 | Moderate | Public domain | Broaden coverage |
+| v0.1 | **ONCHigh (curated pairs)** | 5 | Clinician-curated | Public domain | Seed database |
+| v0.2 | **ONCHigh class-rule expansion** | hundreds (class-expanded) | Clinician-curated rules | Public domain | Broaden coverage at query time |
 | v0.3 | **OpenFDA Labels** | ~10,000+ | NLP-extracted | Public domain | Long tail |
 | ongoing | **Community PRs** | incremental | Source-cited | Apache 2.0 | Continuous |
+
+> **NDF-RT removed from roadmap.** Originally planned as the v0.2 broadening source, NDF-RT is absent from the current RxNorm release (NLM deprecated it in 2018 and shut the RxNav interaction API in 2024). Its role is split between ONCHigh class-rule expansion (v0.2) and OpenFDA NLP (v0.3). See `docs/plans/adr-003-ndf-rt-pivot.md`.
 
 > **Never ingest:** SIDER (CC BY-NC), DrugBank (CC BY-NC), DDInter (research-only).
 > Mixing non-commercial-licensed data would infect the dataset license.
@@ -241,7 +242,6 @@ CREATE TABLE drug_interaction (
 | ONCHigh | `serious` | `serious` |
 | ONCHigh | `significant` | `moderate` |
 | ONCHigh | `monitor` | `monitor` |
-| NDF-RT | Severity narrative | mapped case-by-case |
 | DrugBank | `major` | `serious` _(if ever permitted)_ |
 | DrugBank | `moderate` | `moderate` |
 | DrugBank | `minor` | `minor` |
@@ -531,7 +531,6 @@ and a `docker-compose.yml` that cold-starts in under 30 seconds.
 
 **Could-have (v0.3–v1.0):**
 - OpenFDA NLP ingestion pipeline + confidence scoring
-- NDF-RT ingestion for broader coverage
 - VitePress documentation site
 - FHIR R4 response format option
 - Prometheus `/metrics` endpoint
@@ -555,11 +554,11 @@ and a `docker-compose.yml` that cold-starts in under 30 seconds.
 - [ ] README with quickstart (5 lines to running query)
 
 #### v0.2 — Resolver + Class Inheritance _(Weeks 4–6)_
-- [ ] Identifier resolver: RxCUI ↔ NDC ↔ brand name via RxNorm API + local cache
-- [ ] `drug_class_interaction` schema + class-expansion query logic
-- [ ] NDF-RT VA ingestion adapter
+- [x] Identifier resolver: RxCUI ↔ NDC ↔ brand name via RxNorm local ingest (RXNCONSO / RXNSAT / RXNREL)
+- [x] `drug_class_interaction` schema + class-expansion query logic (ONCHigh rules)
 - [ ] `POST /v1/interactions/batch` endpoint
 - [ ] Vitest test suite: unit tests for resolver + integration tests against seeded DB
+- ~~NDF-RT VA ingestion adapter~~ — removed per [ADR-003](plans/adr-003-ndf-rt-pivot.md); breadth split between ONCHigh class expansion (v0.2) and OpenFDA NLP (v0.3)
 
 #### v0.3 — Long Tail + Community _(Weeks 7–10)_
 - [ ] OpenFDA bulk label download + NLP interaction extraction pipeline

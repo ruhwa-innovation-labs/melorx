@@ -133,7 +133,7 @@ cached in materialized views or an LRU Redis cache without changing the canonica
 The `drug_interaction.confidence` column is `NUMERIC(3,2)` and is explicitly nullable.
 
 - **NULL** means the interaction was curated — it was sourced from a clinician-reviewed dataset
-  (ONCHigh, NDF-RT with manual mapping, or a community PR that passed clinical review). A NULL
+  (ONCHigh concrete pairs, class-rule expansions, or a community PR that passed clinical review). A NULL
   confidence value is not a missing value; it is a positive assertion that this record does not
   require a confidence score because its provenance is direct curation.
 
@@ -182,13 +182,13 @@ pipeline end-to-end while being clinically significant enough to make the API us
 Every ONCHigh pair arrives with a severity already mapped to the canonical enum; no NLP is
 required.
 
-### Phase 2 — NDF-RT / VA National Drug File (v0.2)
+### Phase 2 — ONCHigh Class-Rule Expansion (v0.2)
 
-The VA's National Drug File Reference Terminology (NDF-RT) provides approximately 3,000
-drug-drug interaction pairs with mechanism descriptions. The license is public domain. Coverage
-extends well beyond ONCHigh's high-priority set into moderate-severity interactions. NDF-RT
-severity values are narrative and require case-by-case mapping to the canonical enum; the
-ingestion adapter must include a reviewed mapping table.
+Originally planned as NDF-RT ingestion (~3,000 pairs). Removed per [ADR-003](../plans/adr-003-ndf-rt-pivot.md): NDF-RT is absent from the current RxNorm release (NLM deprecated it in 2018 and shut the RxNav interaction API in January 2024); no authoritative, currently-licensed source remains to ingest.
+
+The v0.2 broadening comes instead from expanding the 14 accepted ONCHigh class-level rules (Phansalkar 2012) at query time. Each rule encodes a class × class interaction (e.g., *statins × CYP3A4 inhibitors* → contraindicated, *SSRIs × MAOIs* → contraindicated) and resolves to concrete drug-pair hits via `drug_concept.drug_class[]` at query time — never pre-materialised. This produces hundreds of concrete pair hits across the most clinically significant mechanisms without a separate ingestion source.
+
+Identifier enrichment in v0.2 populates `drug_concept.identifiers` with ATC codes, brand names, and NDCs sourced from RxNorm (RXNCONSO, RXNREL, RXNSAT). This enables the resolver to map any of those identifier types to a canonical RxCUI at query time.
 
 ### Phase 3 — OpenFDA Drug Labels (v0.3)
 
