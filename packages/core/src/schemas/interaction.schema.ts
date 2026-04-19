@@ -13,6 +13,18 @@ export const interactionQuerySchema = z.object({
   drug2: z.string().min(1).max(200),
 })
 
+export const interactionBatchRequestSchema = z.object({
+  pairs: z
+    .array(
+      z.object({
+        drug1: z.string().min(1).max(200),
+        drug2: z.string().min(1).max(200),
+      }),
+    )
+    .min(1)
+    .max(50),
+})
+
 export const interactionSourceSchema = z.object({
   name: z.string().min(1),
   url: z.string().url(),

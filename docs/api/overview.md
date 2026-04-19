@@ -190,45 +190,49 @@ GET /v1/interactions?drug1=5640&drug2=29046
 
 #### `POST /v1/interactions/batch`
 
-Checks interactions for multiple drug pairs in a single request. Useful for polypharmacy screening where a patient is taking more than two medications.
+Checks interactions for multiple drug pairs in a single request. Useful for polypharmacy screening where a patient is taking more than two medications. Each pair accepts the same identifier types as `GET /v1/interactions`: RxCUI, NDC, brand name, or canonical name.
 
 **Request body**
 
 ```json
-[
-  { "drug1": "5640", "drug2": "29046" },
-  { "drug1": "5640", "drug2": "114200" }
-]
+{
+  "pairs": [
+    { "drug1": "5640", "drug2": "29046" },
+    { "drug1": "ibuprofen", "drug2": "warfarin" }
+  ]
+}
 ```
 
 | Field | Type | Required | Description |
 |-------|------|----------|-------------|
-| `drug1` | string | Yes | RxCUI of the first drug |
-| `drug2` | string | Yes | RxCUI of the second drug |
+| `pairs` | array | Yes | 1–50 pair objects. 400 on empty array or more than 50 entries. |
+| `pairs[].drug1` | string | Yes | Drug identifier (RxCUI, NDC, brand, or name). |
+| `pairs[].drug2` | string | Yes | Drug identifier (RxCUI, NDC, brand, or name). |
 
-Maximum 50 pairs per request.
+**Response shape — partial-success semantics**
 
-**Response shape**
+Pairs resolve independently. Successful pairs land in `data[]` in input order; unresolved pairs go to `errors[]` indexed by their input position. The HTTP status is always 200 when validation passes; consumers should inspect `errors[]` and `meta.pairs_failed` to detect individual failures.
 
 ```json
 {
   "data": [
     {
-      "drug1": { "rxcui": "5640", "name": "Ibuprofen", "classes": ["NSAID"] },
-      "drug2": { "rxcui": "29046", "name": "Lisinopril", "classes": ["ACE inhibitor"] },
-      "interactions": [...]
-    },
-    {
-      "drug1": { "rxcui": "5640", "name": "Ibuprofen", "classes": ["NSAID"] },
-      "drug2": { "rxcui": "114200", "name": "Warfarin", "classes": ["Anticoagulant"] },
-      "interactions": [...]
+      "drug1": { "rxcui": "5640", "name": "ibuprofen", "classes": [] },
+      "drug2": { "rxcui": "29046", "name": "lisinopril", "classes": [] },
+      "interactions": [ { "severity": "moderate", "mechanism": "...", "management": "...", "sources": [...], "confidence": null } ]
     }
+  ],
+  "errors": [
+    { "index": 1, "error": "DRUG_NOT_FOUND", "drug": "notadrug99999" }
   ],
   "disclaimer": "melo-rx is for informational purposes only. It does not constitute medical advice and must not replace clinical judgment. Always consult a licensed healthcare professional.",
   "meta": {
-    "version": "1.0.0",
-    "dataset_version": "2026-04-14",
-    "query_time_ms": 11
+    "version": "0.1.0",
+    "dataset_version": "2026-04-19",
+    "query_time_ms": 11,
+    "pairs_requested": 2,
+    "pairs_resolved": 1,
+    "pairs_failed": 1
   }
 }
 ```
@@ -239,10 +243,12 @@ Maximum 50 pairs per request.
 POST /v1/interactions/batch
 Content-Type: application/json
 
-[
-  { "drug1": "5640", "drug2": "29046" },
-  { "drug1": "5640", "drug2": "114200" }
-]
+{
+  "pairs": [
+    { "drug1": "5640", "drug2": "29046" },
+    { "drug1": "ibuprofen", "drug2": "warfarin" }
+  ]
+}
 ```
 
 ---
