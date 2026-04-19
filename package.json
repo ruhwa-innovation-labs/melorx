@@ -15,7 +15,8 @@
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
     "db:seed": "tsx --env-file=.env pipeline/sources/onc-high/seed.ts",
-    "db:seed:classes": "tsx --env-file=.env pipeline/sources/onc-high/class-seed.ts"
+    "db:seed:classes": "tsx --env-file=.env pipeline/sources/onc-high/class-seed.ts",
+    "db:enrich": "tsx --env-file=.env pipeline/resolver/enrich.ts"
   },
   "devDependencies": {
     "drizzle-kit": "^0.30.0",

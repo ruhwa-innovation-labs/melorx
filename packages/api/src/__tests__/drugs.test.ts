@@ -35,6 +35,31 @@ describe('GET /v1/drugs/resolve', () => {
     const res = await app.request('/v1/drugs/resolve')
     expect(res.status).toBe(400)
   })
+
+  it('resolves a brand name to its ingredient concept (case-insensitive)', async () => {
+    // Requires `pnpm db:seed:classes` + `pnpm db:enrich` so that identifiers.brand_names
+    // is populated on simvastatin (36567) with brands from RxNorm (includes Zocor).
+    const res = await app.request('/v1/drugs/resolve?q=zocor')
+    expect(res.status).toBe(200)
+    const body = await res.json() as { data: { rxcui: string; name: string } }
+    expect(body.data.rxcui).toBe('36567')
+    expect(body.data.name.toLowerCase()).toContain('simvastatin')
+  })
+
+  it('resolves an NDC to its ingredient concept', async () => {
+    // Requires `pnpm db:seed:classes` + `pnpm db:enrich` so simvastatin has NDCs populated.
+    // The NDC used here (00006074031) is on simvastatin 10 MG Oral Tablet (RxCUI 314231)
+    // in the April 2026 RxNorm release.
+    const res = await app.request('/v1/drugs/resolve?q=00006074031')
+    expect(res.status).toBe(200)
+    const body = await res.json() as { data: { rxcui: string } }
+    expect(body.data.rxcui).toBe('36567')
+  })
+
+  it('returns 404 for an unknown NDC', async () => {
+    const res = await app.request('/v1/drugs/resolve?q=99999999999')
+    expect(res.status).toBe(404)
+  })
 })
 
 describe('GET /v1/drugs/:rxcui', () => {

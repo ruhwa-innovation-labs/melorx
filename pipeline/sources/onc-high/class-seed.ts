@@ -11,6 +11,11 @@ import {
   loadIdentifierIndex,
   type IngredientIdentifiers,
 } from '../../resolver/rxnorm-identifiers.js'
+import {
+  mergeIdentifiers,
+  identifiersEqual,
+  type DrugConceptIdentifiers,
+} from '../../resolver/merge-identifiers.js'
 import { classRulesFileSchema } from './class-schemas.js'
 import { collectDrugMemberships } from './class-drugs.js'
 import { toClassInteractionRows } from './class-transform.js'
@@ -119,7 +124,7 @@ async function upsertDrugConcepts(
         name: entry.name,
         drugClass: [...entry.classes].sort(),
         identifiers: {
-          ndc: [],
+          ndc: identifiers?.ndc ?? [],
           atc: identifiers?.atc ?? null,
           drugbank: null,
           brand_names: identifiers?.brand_names ?? [],
@@ -141,7 +146,10 @@ async function upsertDrugConcepts(
       !identifiersEqual(existingIdentifiers, mergedIdentifiers)
 
     if (classesChanged || identifiersChanged) {
-      const update: { drugClass?: string[]; identifiers?: Identifiers } = {}
+      const update: {
+        drugClass?: string[]
+        identifiers?: DrugConceptIdentifiers
+      } = {}
       if (classesChanged) update.drugClass = [...current].sort()
       if (identifiersChanged && mergedIdentifiers !== null) {
         update.identifiers = mergedIdentifiers
@@ -158,48 +166,6 @@ async function upsertDrugConcepts(
   }
 
   return result
-}
-
-type Identifiers = {
-  ndc: string[]
-  atc: string | null
-  drugbank: string | null
-  brand_names: string[]
-}
-
-function mergeIdentifiers(
-  existing: Identifiers | undefined,
-  incoming: IngredientIdentifiers | undefined,
-): Identifiers | null {
-  if (!incoming) return null
-  const base: Identifiers = existing ?? {
-    ndc: [],
-    atc: null,
-    drugbank: null,
-    brand_names: [],
-  }
-  const brandMerged = new Set<string>([...base.brand_names, ...incoming.brand_names])
-  return {
-    ndc: base.ndc,
-    atc: base.atc ?? incoming.atc,
-    drugbank: base.drugbank,
-    brand_names: [...brandMerged].sort(),
-  }
-}
-
-function identifiersEqual(
-  a: Identifiers | undefined,
-  b: Identifiers,
-): boolean {
-  if (!a) return false
-  if (a.atc !== b.atc) return false
-  if (a.drugbank !== b.drugbank) return false
-  if (a.ndc.length !== b.ndc.length) return false
-  if (a.brand_names.length !== b.brand_names.length) return false
-  for (let i = 0; i < a.brand_names.length; i++) {
-    if (a.brand_names[i] !== b.brand_names[i]) return false
-  }
-  return true
 }
 
 interface ClassResult {
