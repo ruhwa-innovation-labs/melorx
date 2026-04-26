@@ -1,0 +1,509 @@
+{
+  "id": "68286edc-d6ef-4cd7-afc5-e8cdae3815b6",
+  "prevId": "d5e0236d-c52d-434f-9684-c06d7e27ff49",
+  "version": "7",
+  "dialect": "postgresql",
+  "tables": {
+    "public.drug_class_interaction": {
+      "name": "drug_class_interaction",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "class_a": {
+          "name": "class_a",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "class_b": {
+          "name": "class_b",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "severity": {
+          "name": "severity",
+          "type": "severity_enum",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "mechanism": {
+          "name": "mechanism",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "management": {
+          "name": "management",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "sources": {
+          "name": "sources",
+          "type": "jsonb[]",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'{}'"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "drug_class_interaction_class_a_class_b_unique": {
+          "name": "drug_class_interaction_class_a_class_b_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "class_a",
+            "class_b"
+          ]
+        }
+      },
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.drug_concept": {
+      "name": "drug_concept",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "rxcui": {
+          "name": "rxcui",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "name": {
+          "name": "name",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "drug_class": {
+          "name": "drug_class",
+          "type": "varchar[]",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'{}'"
+        },
+        "identifiers": {
+          "name": "identifiers",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'{\"ndc\":[],\"atc\":null,\"drugbank\":null,\"brand_names\":[]}'::jsonb"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "drug_concept_rxcui_unique": {
+          "name": "drug_concept_rxcui_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "rxcui"
+          ]
+        }
+      },
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.drug_interaction": {
+      "name": "drug_interaction",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "drug1_rxcui": {
+          "name": "drug1_rxcui",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "drug2_rxcui": {
+          "name": "drug2_rxcui",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "severity": {
+          "name": "severity",
+          "type": "severity_enum",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "mechanism": {
+          "name": "mechanism",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "management": {
+          "name": "management",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "sources": {
+          "name": "sources",
+          "type": "jsonb[]",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'{}'"
+        },
+        "class_rule_id": {
+          "name": "class_rule_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "is_generated": {
+          "name": "is_generated",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
+        },
+        "confidence": {
+          "name": "confidence",
+          "type": "numeric(3, 2)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "drug_interaction_drug1_rxcui_drug_concept_rxcui_fk": {
+          "name": "drug_interaction_drug1_rxcui_drug_concept_rxcui_fk",
+          "tableFrom": "drug_interaction",
+          "tableTo": "drug_concept",
+          "columnsFrom": [
+            "drug1_rxcui"
+          ],
+          "columnsTo": [
+            "rxcui"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "drug_interaction_drug2_rxcui_drug_concept_rxcui_fk": {
+          "name": "drug_interaction_drug2_rxcui_drug_concept_rxcui_fk",
+          "tableFrom": "drug_interaction",
+          "tableTo": "drug_concept",
+          "columnsFrom": [
+            "drug2_rxcui"
+          ],
+          "columnsTo": [
+            "rxcui"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "drug_interaction_class_rule_id_drug_class_interaction_id_fk": {
+          "name": "drug_interaction_class_rule_id_drug_class_interaction_id_fk",
+          "tableFrom": "drug_interaction",
+          "tableTo": "drug_class_interaction",
+          "columnsFrom": [
+            "class_rule_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "drug_interaction_drug1_rxcui_drug2_rxcui_unique": {
+          "name": "drug_interaction_drug1_rxcui_drug2_rxcui_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "drug1_rxcui",
+            "drug2_rxcui"
+          ]
+        }
+      },
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.drug_interaction_review": {
+      "name": "drug_interaction_review",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "drug1_rxcui": {
+          "name": "drug1_rxcui",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "drug2_rxcui": {
+          "name": "drug2_rxcui",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "severity": {
+          "name": "severity",
+          "type": "severity_enum",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "mechanism": {
+          "name": "mechanism",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "management": {
+          "name": "management",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "sources": {
+          "name": "sources",
+          "type": "jsonb[]",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'{}'"
+        },
+        "confidence": {
+          "name": "confidence",
+          "type": "numeric(3, 2)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "pattern_id": {
+          "name": "pattern_id",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "source_sentence": {
+          "name": "source_sentence",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "status": {
+          "name": "status",
+          "type": "review_status_enum",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'pending'"
+        },
+        "reviewed_by": {
+          "name": "reviewed_by",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "reviewed_at": {
+          "name": "reviewed_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "rejection_reason": {
+          "name": "rejection_reason",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "promoted_interaction_id": {
+          "name": "promoted_interaction_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "drug_interaction_review_promoted_interaction_id_drug_interaction_id_fk": {
+          "name": "drug_interaction_review_promoted_interaction_id_drug_interaction_id_fk",
+          "tableFrom": "drug_interaction_review",
+          "tableTo": "drug_interaction",
+          "columnsFrom": [
+            "promoted_interaction_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "drug_interaction_review_drug1_rxcui_drug2_rxcui_pattern_id_source_sentence_unique": {
+          "name": "drug_interaction_review_drug1_rxcui_drug2_rxcui_pattern_id_source_sentence_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "drug1_rxcui",
+            "drug2_rxcui",
+            "pattern_id",
+            "source_sentence"
+          ]
+        }
+      },
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.pipeline_state": {
+      "name": "pipeline_state",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "source_name": {
+          "name": "source_name",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "partition_id": {
+          "name": "partition_id",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "checksum": {
+          "name": "checksum",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "records_processed": {
+          "name": "records_processed",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
+        },
+        "last_ingested_at": {
+          "name": "last_ingested_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "pipeline_state_source_name_partition_id_unique": {
+          "name": "pipeline_state_source_name_partition_id_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "source_name",
+            "partition_id"
+          ]
+        }
+      },
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    }
+  },
+  "enums": {
+    "public.review_status_enum": {
+      "name": "review_status_enum",
+      "schema": "public",
+      "values": [
+        "pending",
+        "approved",
+        "rejected"
+      ]
+    },
+    "public.severity_enum": {
+      "name": "severity_enum",
+      "schema": "public",
+      "values": [
+        "contraindicated",
+        "serious",
+        "moderate",
+        "minor",
+        "monitor"
+      ]
+    }
+  },
+  "schemas": {},
+  "sequences": {},
+  "roles": {},
+  "policies": {},
+  "views": {},
+  "_meta": {
+    "columns": {},
+    "schemas": {},
+    "tables": {}
+  }
+}

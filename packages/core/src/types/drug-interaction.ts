@@ -14,6 +14,10 @@ export interface InteractionSource {
   url: string
   type: SourceType
   accessed_date: string
+  /** OpenFDA label set identifier, when the source is an FDA label extraction. */
+  set_id?: string
+  /** Label effective date (ISO), when the source is an FDA label extraction. */
+  effective_time?: string
 }
 
 export interface InteractionResult {
