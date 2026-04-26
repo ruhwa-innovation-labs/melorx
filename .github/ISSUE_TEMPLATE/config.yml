@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Security vulnerability
+    url: https://github.com/ruhwa-innovation-labs/melorx/security/advisories/new
+    about: Report security vulnerabilities privately. Do NOT open a public issue.
+  - name: Data contribution (drug-drug interaction pair)
+    url: https://github.com/ruhwa-innovation-labs/melorx/blob/main/.github/PULL_REQUEST_TEMPLATE/community-interaction.md
+    about: To propose a new or corrected interaction pair, open a pull request using the community-interaction template instead of an issue.
+  - name: Question or discussion
+    url: https://github.com/ruhwa-innovation-labs/melorx/discussions
+    about: Use GitHub Discussions for usage questions and open-ended conversations.

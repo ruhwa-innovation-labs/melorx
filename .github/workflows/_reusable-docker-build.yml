@@ -1,0 +1,66 @@
+name: _reusable-docker-build
+
+# Reusable workflow: builds the API Docker image and pushes to GHCR with the
+# supplied tags. Called from both docker-edge.yml (push to main) and
+# publish.yml (release.published).
+
+on:
+  workflow_call:
+    inputs:
+      tags:
+        description: Newline-separated list of full image references (e.g. ghcr.io/org/repo:edge)
+        type: string
+        required: true
+      push:
+        description: Whether to push the image after build. Set false for PR builds.
+        type: boolean
+        default: true
+    outputs:
+      digest:
+        description: The pushed image's manifest digest
+        value: ${{ jobs.build.outputs.digest }}
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  build:
+    name: Build & push
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    outputs:
+      digest: ${{ steps.push.outputs.digest }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to GHCR
+        if: inputs.push
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build & push
+        id: push
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./Dockerfile
+          push: ${{ inputs.push }}
+          tags: ${{ inputs.tags }}
+          labels: |
+            org.opencontainers.image.source=https://github.com/${{ github.repository }}
+            org.opencontainers.image.revision=${{ github.sha }}
+            org.opencontainers.image.licenses=Apache-2.0
+            org.opencontainers.image.description=melorx drug-drug interaction API
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          platforms: linux/amd64
+          provenance: true
+          sbom: true

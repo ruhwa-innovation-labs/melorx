@@ -1,0 +1,73 @@
+name: Bug report
+description: Report an unexpected behaviour, crash, or regression.
+title: "bug: "
+labels: ["bug", "triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to report a bug. Please fill in as much detail as you can.
+
+        **Security issue?** Stop and use the private report link at the top of this page instead.
+
+  - type: textarea
+    id: description
+    attributes:
+      label: What happened?
+      description: A clear description of the bug.
+      placeholder: "When I POST to /v1/interactions/batch with …, I expected … but got …"
+    validations:
+      required: true
+
+  - type: textarea
+    id: repro
+    attributes:
+      label: Reproduction
+      description: Minimal steps (curl, code snippet, or command sequence) to reproduce the issue.
+      render: bash
+      placeholder: |
+        docker run --rm -e DATABASE_URL=... ghcr.io/ruhwa-innovation-labs/melorx:v0.3.0 pnpm db:migrate
+        curl -sS localhost:3000/v1/interactions?drug1=5640&drug2=29046
+    validations:
+      required: true
+
+  - type: input
+    id: version
+    attributes:
+      label: melorx version
+      description: "Either the Docker image tag, the @melorx/client version, or the git SHA you're running."
+      placeholder: "v0.3.0 or ghcr.io/...:sha-05602b8"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: surface
+    attributes:
+      label: Which surface is affected?
+      multiple: true
+      options:
+        - API (packages/api)
+        - '@melorx/client npm package'
+        - CLI (@melorx/cli)
+        - Pipeline / ingestion
+        - Docker image
+        - Documentation
+    validations:
+      required: true
+
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: "OS, Node version, Postgres version, Docker engine version — anything relevant."
+      placeholder: |
+        Linux 5.15, Node 22.11, Postgres 16.4, Docker 24.0.7
+    validations:
+      required: false
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Relevant logs
+      description: Paste any error output, pino log lines, or stack traces. Redact PII or credentials.
+      render: text

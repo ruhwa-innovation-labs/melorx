@@ -1,224 +1,240 @@
 # Deployment Pipeline
 
-## Pipeline Overview
+melorx uses a release-please-driven pipeline that produces two kinds of
+artefact from every release:
 
-The CI/CD pipeline has two modes:
+- A **Docker image** published to GitHub Container Registry
+  (`ghcr.io/ruhwa-innovation-labs/melorx`) — consumed by self-hosted operators.
+- An **npm package**, `@melorx/client` — consumed by application developers.
 
-**Branch push.** Runs on every push to any branch. Executes tests, typecheck, lint, and
-dependency audit. Does not build or push a Docker image. This mode gates pull request merges
-and gives contributors immediate feedback.
-
-**Merge to main.** Runs all branch-push steps, then builds the Docker image, pushes it to
-Docker Hub, and triggers a deploy to the Fly.io hosted demo.
-
----
-
-## GitHub Actions Workflow Steps
-
-Steps run in order. A failure at any step halts the pipeline. Steps are not parallelized
-except where explicitly noted.
-
-### 1. `pnpm install`
-
-```yaml
-- run: pnpm install --frozen-lockfile
-```
-
-The `--frozen-lockfile` flag ensures the installed modules exactly match `pnpm-lock.yaml`.
-If the lockfile is out of sync with `package.json` manifests, this step fails. This prevents
-dependency drift between CI and local environments.
-
-### 2. `pnpm typecheck`
-
-```yaml
-- run: pnpm typecheck
-```
-
-Runs `tsc --noEmit` across all packages in the monorepo (`packages/core`, `packages/api`,
-`packages/cli`, `packages/client`). Type errors in any package fail the build. This is the
-fastest signal that a cross-package type contract has been broken.
-
-### 3. `pnpm lint`
-
-```yaml
-- run: pnpm lint
-```
-
-Runs ESLint across the monorepo. The ESLint configuration enforces consistent code style and
-catches common error patterns. Lint warnings are reported but do not fail the build; lint
-errors do.
-
-### 4. `pnpm test --coverage`
-
-```yaml
-- run: pnpm test --coverage
-```
-
-Runs Vitest across all packages. Integration tests execute against a real PostgreSQL 16
-instance provided by a GitHub Actions `services` container — the same version used in
-production. The PostgreSQL service is seeded with the test fixture dataset before the test
-run begins.
-
-Coverage reports are uploaded as artifacts. There is no enforced coverage threshold at
-pre-v1.0; coverage gates will be introduced at v1.0.
-
-The PostgreSQL service configuration in the workflow file:
-
-```yaml
-services:
-  postgres:
-    image: postgres:16
-    env:
-      POSTGRES_USER: test
-      POSTGRES_PASSWORD: test
-      POSTGRES_DB: melo_rx_test
-    ports:
-      - 5432:5432
-    options: >-
-      --health-cmd pg_isready
-      --health-interval 10s
-      --health-timeout 5s
-      --health-retries 5
-```
-
-### 5. `pnpm audit`
-
-```yaml
-- run: pnpm audit --audit-level high
-```
-
-Runs `pnpm audit` against the lockfile. The pipeline fails if any advisory is rated `high`
-or `critical`. Moderate and low advisories are reported in the build log but do not block
-the pipeline.
-
-This step runs after tests because audit failures are less common than test failures and
-should not mask test output.
-
-### 6. `pnpm build` (main branch only)
-
-```yaml
-- if: github.ref == 'refs/heads/main'
-  run: pnpm build
-```
-
-Compiles all packages to their `dist/` output directories. This step only runs on merges
-to main. It verifies that the compiled output is producible before the Docker image build
-step attempts to copy it.
-
-### 7. Docker build and push (main branch only)
-
-```yaml
-- if: github.ref == 'refs/heads/main'
-  run: |
-    docker build -t melo-rx/api:${{ github.sha }} -t melo-rx/api:latest .
-    docker push melo-rx/api:${{ github.sha }}
-    docker push melo-rx/api:latest
-```
-
-Builds the Docker image using the `Dockerfile` in the repository root and pushes two tags:
-
-- `melo-rx/api:<git-sha>` — immutable, references the exact commit
-- `melo-rx/api:latest` — floating tag, always points to the most recent main build
-
-The SHA tag is used by the Fly.io deploy step to reference a specific image version.
-The `latest` tag is used by self-hosted operators who want to track the current release
-without specifying an explicit version.
+There is no single "production" environment owned by the project. melorx
+is self-hosted by its users; the CI/CD pipeline's job is to produce trusted,
+signed artefacts, not to run a hosted service.
 
 ---
 
-## Ingestion Pipeline Schedule
+## Overview
 
-The data ingestion pipeline runs on a separate schedule from the application CI/CD pipeline.
-
-**OpenFDA bulk download + NLP extraction** runs on the 1st of each month via a GitHub Actions
-scheduled workflow (`schedule: cron: '0 2 1 * *'`). The pipeline:
-
-1. Downloads the current OpenFDA drug label bulk archive
-2. Verifies the SHA-256 checksum against the published value
-3. Runs the NLP interaction extraction pipeline against new or updated labels
-4. Inserts new interaction pairs with `confidence` scores; pairs below 0.75 are flagged for
-   human review and not served in production until approved
-5. Updates the `pipeline_run` table with run metadata (pairs ingested, pairs rejected, errors)
-
-**NDF-RT refresh** runs quarterly (`schedule: cron: '0 3 1 */3 *'`). The NDF-RT source is
-updated less frequently than OpenFDA labels; a quarterly schedule avoids unnecessary
-re-processing.
-
-If an ingestion run fails (checksum mismatch, parse error, database error), the pipeline
-logs the failure to the `pipeline_run` table and exits with a non-zero code. GitHub Actions
-sends a failure notification. No partial data is committed to the database on a failed run —
-the ingestion adapter uses a transaction that rolls back on error.
-
----
-
-## Secrets Management
-
-The following secrets are stored in GitHub Actions repository secrets and are never committed
-to the repository or written to build logs:
-
-| Secret | Usage |
-|--------|-------|
-| `DATABASE_URL` | PostgreSQL connection string for production and ingestion pipeline |
-| `API_KEY_SECRET` | Signing key for API key bearer tokens (hosted demo) |
-| `FLY_API_TOKEN` | Fly.io deploy authentication |
-| `DOCKER_HUB_TOKEN` | Docker Hub push authentication |
-| `S3_ACCESS_KEY_ID` | Object storage access key |
-| `S3_SECRET_ACCESS_KEY` | Object storage secret key |
-
-Secrets are injected as environment variables at the step level, not at the job level, to
-minimize the blast radius of any accidental exposure. Secrets are not passed to pull request
-workflows from forks — ingestion and deploy steps run only on the main branch with direct
-push access.
-
-All database connections in the application use `DATABASE_URL` as a single connection string.
-There is no code that constructs a connection string from individual host/user/password parts;
-this ensures that no partial credential can appear in logs or error messages.
-
----
-
-## Deployment to Fly.io
-
-Fly.io deployment is triggered after the Docker push step succeeds on main:
-
-```yaml
-- if: github.ref == 'refs/heads/main'
-  run: flyctl deploy --image melo-rx/api:${{ github.sha }}
+```
+┌────────────┐     Conventional Commits     ┌─────────────────────┐
+│  feature   │ ───────────────────────────▶ │  release-please PR  │
+│    PRs     │                              │  (opens on main)     │
+└────────────┘                              └─────────┬───────────┘
+     │                                                │
+     │ CI (ci.yml)                                    │ merge
+     │ — typecheck                                    ▼
+     │ — 187 tests                           ┌─────────────────────┐
+     │ — client build                        │  GitHub Release +   │
+     │                                       │  tags               │
+     ▼                                       └─────────┬───────────┘
+ all green? ──▶ merge to main                          │
+                 │                                     ▼
+                 ▼                           ┌─────────────────────┐
+      ┌──────────────────────┐               │ publish.yml         │
+      │ docker-edge.yml      │               │ ├─ npm publish      │
+      │ → ghcr.io/...:edge    │               │ │   @melorx/client │
+      │ → ghcr.io/...:sha-<…> │               │ └─ docker push      │
+      └──────────────────────┘               │     :v0.3.0 + :latest│
+                                             └─────────────────────┘
 ```
 
-The deploy uses a rolling strategy. Fly.io starts the new container version, waits for the
-liveness probe (`GET /health`) to return `200`, and only then terminates the old version.
-Zero-downtime is achieved as long as the new version passes its health check within the
-configured timeout (30 seconds, 3 retries).
+Five workflows make this happen:
 
-If the new version fails its health check, Fly.io aborts the deploy and the previous version
-remains live. The failed deploy is visible in the GitHub Actions log and in the Fly.io
-dashboard.
-
-Database migrations (`drizzle-kit migrate`) run as a Fly.io release command before the new
-container version receives traffic. If the migration fails, the deploy is aborted before any
-traffic hits the new version.
+| Workflow | Trigger | Produces |
+|---|---|---|
+| `ci.yml` | every PR + push to `main` | typecheck + 187 tests + client build sanity |
+| `validate-community.yml` | PRs touching `pipeline/sources/community/**` | schema validation for community-contributed pairs |
+| `docker-edge.yml` | push to `main` | `:edge` and `:sha-<short>` Docker images on GHCR |
+| `release-please.yml` | push to `main` | opens / updates the release PR |
+| `publish.yml` | `release.published` event | versioned npm publish + versioned Docker image |
+| `scheduled-ingest-openfda.yml` | cron (`0 2 1 * *`) + manual dispatch | monthly OpenFDA ingest + promote (opt-in per `OPENFDA_DATABASE_URL` secret) |
 
 ---
 
-## Dataset Release Process
+## Branching & commit discipline
 
-Dataset changes (new interaction pairs, severity corrections, source citation updates) are
-versioned independently from the application code using a semver dataset tag.
+- Conventional Commits required on `main` (enforced by convention, not a
+  bot). `feat:`, `fix:`, `perf:`, `docs:`, `refactor:`, `test:`, `build:`,
+  `ci:`, `chore:`, `deps:`, `revert:`. `!` or a `BREAKING CHANGE:` footer
+  triggers a major version bump.
+- Feature branches rebase onto `main`. No merge commits.
+- Every PR must pass `ci.yml` before merge.
 
-**Tagging convention:** `v0.1.0`, `v0.2.0`, `v0.3.0` — minor version bumps for new data
-sources (ONCHigh, NDF-RT, OpenFDA); patch version bumps for corrections to existing pairs.
+`release-please` parses these commits to decide what to bump and what goes
+in the CHANGELOG.
 
-**`DATASET_CHANGELOG.md`** is updated on every dataset version tag. Each entry records:
+---
 
-- Tag version and date
-- Number of pairs added, modified, or removed
-- Source(s) for new pairs
-- Any severity corrections and their rationale
-- Any pairs removed and why
+## CI workflow (`ci.yml`)
 
-The dataset version is included in every API response under `meta.dataset_version`, allowing
-downstream applications to detect when the underlying data has changed and re-evaluate any
-cached interaction results.
+Runs on every PR and every push to `main`. One job, one Postgres 16 service
+container, full workspace test matrix.
 
-Dataset releases do not require an application code change. The pipeline can tag a new dataset
-version, update the changelog, and the new data is live on the next ingestion run.
+Steps:
+
+1. `pnpm install --frozen-lockfile`
+2. `pnpm -r typecheck`
+3. `pnpm db:migrate`
+4. `pnpm db:seed` — loads the 5-pair ONCHigh curated seed.
+5. `pnpm db:seed:ci` — loads the minimal RxNorm-derived fixture the
+   integration tests need, without shipping the 1.2 GB RxNorm RRFs to CI.
+6. `pnpm -r test` — 187 tests across `@melorx/core`, `@melorx/client`,
+   `@melorx/pipeline`, `@melorx/api`, `@melorx/cli`.
+7. `pnpm --filter @melorx/client build` — sanity-checks the publish output.
+8. Assert that the client DTS does not leak `@melorx/core` imports.
+
+Coverage gates will be introduced at v1.0. `pnpm audit` is run by Dependabot
+on a weekly cadence; CI does not hard-fail on new advisories.
+
+---
+
+## Docker publishing
+
+### Edge (`docker-edge.yml`)
+
+Every push to `main` builds and pushes:
+
+- `ghcr.io/ruhwa-innovation-labs/melorx:edge` — floating, tracks `main`.
+- `ghcr.io/ruhwa-innovation-labs/melorx:sha-<short>` — immutable.
+
+This gives operators a way to test the latest code before the next tagged
+release and provides a rollback target.
+
+### Versioned (`publish.yml`)
+
+On every `release.published` event whose tag matches `melorx-v*`:
+
+- `ghcr.io/ruhwa-innovation-labs/melorx:v0.3.0`
+- `ghcr.io/ruhwa-innovation-labs/melorx:latest`
+- `ghcr.io/ruhwa-innovation-labs/melorx:sha-<commit>`
+
+Both edge and versioned builds share `.github/workflows/_reusable-docker-build.yml`
+(build-push-action v5, Buildx cache backed by the GitHub Actions cache,
+provenance + SBOM enabled).
+
+### Image contents
+
+The `Dockerfile` at the repo root produces a single runtime image (Node
+22-alpine). See `docs/operations/self-hosted-deployment.md` for the
+operator-facing guide.
+
+Size budget: the current image is ~250 MB uncompressed (includes all
+workspace source for `tsx`-based startup and `drizzle-kit` for migrations).
+A slimmer bundle target is a future optimisation.
+
+---
+
+## npm publishing
+
+`@melorx/client` is the only public npm package. Everything else in the
+workspace is `private: true`.
+
+On `release.published` for a `client-v*` tag, `publish.yml` runs:
+
+```bash
+pnpm install --frozen-lockfile
+pnpm --filter @melorx/client build
+cd packages/client
+npm publish --provenance --access public --tag <dist-tag>
+```
+
+- `<dist-tag>` is `next` when the version contains a pre-release suffix
+  (e.g. `0.3.0-rc.1`), otherwise `latest`.
+- `--provenance` is enabled via `.npmrc`. The publish runner has
+  `id-token: write` so npm can attest the build came from this repository.
+- The job fails if `packages/client/package.json`'s version does not match
+  the release tag (defensive check against manual tag drift).
+
+Required repository secret: `NPM_TOKEN` — an npm automation token with
+publish access to the `@melorx` scope. The scope must be created on
+npmjs.com before the first publish.
+
+---
+
+## Release-please
+
+- Config: `release-please-config.json` (manifest mode).
+- State: `.release-please-manifest.json` (current version per package).
+- Workflow: `.github/workflows/release-please.yml` runs on push to `main`.
+
+Two packages are versioned independently:
+
+1. **Root "melorx"** (`.`) — the app / Docker image version. Tag format:
+   `melorx-v<semver>`.
+2. **`packages/client`** — the npm package version. Tag format:
+   `client-v<semver>`.
+
+Workspace cross-links (`pnpm-workspace` internal deps) are kept in sync by
+the `node-workspace` plugin.
+
+Merging the open release PR for a package bumps its version, updates its
+`CHANGELOG.md`, cuts the Git tag, publishes the GitHub Release, and fires
+`publish.yml` with the appropriate tag.
+
+---
+
+## Scheduled ingestion
+
+`.github/workflows/scheduled-ingest-openfda.yml` runs the OpenFDA
+bulk-download → extract → review-queue → promote cycle on the first of each
+month at 02:00 UTC, or on manual dispatch.
+
+This workflow is **opt-in**. It short-circuits unless the
+`OPENFDA_DATABASE_URL` repository secret is set. Operators who want to
+update their self-hosted dataset on the project's schedule can add the
+secret; everyone else leaves the workflow dormant.
+
+The `scheduled-ingest-openfda.yml` workflow:
+
+1. Checks for the `OPENFDA_DATABASE_URL` secret. Logs and exits 0 if absent.
+2. Applies pending migrations.
+3. Runs `pnpm cli ingest all --max-partitions 3` (override via input).
+4. Runs `pnpm db:promote` to move eligible review-queue rows into
+   `drug_interaction` (enforcing Rule #6 at write time).
+
+A future `scheduled-ingest-ndf-rt.yml` could sit alongside — currently
+deferred per ADR-003 (NDF-RT removed from the source roadmap).
+
+---
+
+## Secrets
+
+| Secret | Used by | Purpose |
+|---|---|---|
+| `GITHUB_TOKEN` | every workflow | auto-provided; used for GHCR push, release PR creation |
+| `NPM_TOKEN` | `publish.yml` (npm job) | automation token with publish access to `@melorx` scope |
+| `OPENFDA_DATABASE_URL` | `scheduled-ingest-openfda.yml` | **optional**; Postgres DSN for scheduled ingest |
+
+Every secret is injected at the step level, never job level, so its blast
+radius is a single step. Fork PRs do not receive secrets — the publish and
+scheduled-ingest workflows skip automatically for fork-originated events.
+
+---
+
+## Branch protection recommendations
+
+These are operator-side settings (not code). Recommended configuration on
+`main`:
+
+- Require `ci / Test` status check to pass before merging.
+- Require at least 1 approving review (CODEOWNERS route).
+- Dismiss stale approvals on new commits.
+- Require linear history (no merge commits).
+- Require branches to be up-to-date before merging.
+
+See `.github/CODEOWNERS` for the paths that require maintainer review.
+
+---
+
+## Dataset versioning
+
+The dataset has its own versioning story driven by what ingested into the
+database, not what the code version is. Every API response carries
+`meta.dataset_version` reflecting the most recent `pipeline_state.last_ingested_at`
+timestamp (format `YYYY-MM-DD`). Downstream callers can detect when the
+dataset has changed and re-evaluate cached results.
+
+Dataset changes **do not require a code release.** An ingest run on the 1st
+of the month advances `dataset_version` without touching the code or
+producing a new Docker image. Correctness fixes to curated pairs or class
+rules do require a code release, since those live in `pipeline/sources/`.

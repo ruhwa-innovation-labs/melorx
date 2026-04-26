@@ -1,12 +1,12 @@
-# melo-rx
+# melorx
 
 **Open-source drug-drug interaction (DDI) API.** A maintained, Apache 2.0-licensed replacement for the NLM RxNav DDI service (decommissioned January 2024).
 
 [![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](LICENSE)
-[![npm](https://img.shields.io/npm/v/@melo-rx/client)](https://www.npmjs.com/package/@melo-rx/client)
+[![npm](https://img.shields.io/npm/v/@melorx/client)](https://www.npmjs.com/package/@melorx/client)
 [![Status](https://img.shields.io/badge/status-pre--development-orange)]()
 
-> **Disclaimer:** melo-rx is for informational purposes only. It does not constitute medical advice and must not replace clinical judgment. Always consult a licensed healthcare professional.
+> **Disclaimer:** melorx is for informational purposes only. It does not constitute medical advice and must not replace clinical judgment. Always consult a licensed healthcare professional.
 
 ---
 
@@ -18,20 +18,20 @@ RxNav's DDI APIs were shut down with no open-source replacement. Developers buil
 - Datasets frozen since 2015 under non-commercial licenses
 - DIY static lookup tables that rot within 18 months
 
-melo-rx fills that gap: a normalized DDI dataset seeded from clinician-curated public-domain sources, exposed as a self-hostable REST API and npm package under Apache 2.0.
+melorx fills that gap: a normalized DDI dataset seeded from clinician-curated public-domain sources, exposed as a self-hostable REST API and npm package under Apache 2.0.
 
 ---
 
 ## Quick start
 
 ```bash
-pnpm add @melo-rx/client
+pnpm add @melorx/client
 ```
 
 ```ts
-import { createClient } from '@melo-rx/client'
+import { createClient } from '@melorx/client'
 
-const client = createClient({ baseUrl: 'https://demo.melo-rx.dev' })
+const client = createClient({ baseUrl: 'https://demo.melorx.dev' })
 
 const result = await client.checkInteraction('lisinopril', 'ibuprofen')
 console.log(result.interactions[0].severity)   // "moderate"
@@ -42,20 +42,32 @@ console.log(result.disclaimer)                 // always present
 
 ## Self-hosting
 
+### From the published Docker image (recommended)
+
 ```bash
-git clone https://github.com/ruhwa-innovation-labs/melo-rx.git
-cd melo-rx
+docker pull ghcr.io/ruhwa-innovation-labs/melorx:latest
+```
+
+A ready-to-run `docker-compose.prod.yml` plus Caddy / systemd / Nginx
+snippets and backup + upgrade runbooks live in
+[**docs/operations/self-hosted-deployment.md**](docs/operations/self-hosted-deployment.md).
+
+### From source (development)
+
+```bash
+git clone https://github.com/ruhwa-innovation-labs/melorx.git
+cd melorx
 cp .env.example .env          # set DATABASE_URL
 docker compose up -d          # starts PostgreSQL
 pnpm install
 pnpm db:migrate
-pnpm db:seed                  # loads ONCHigh 437 pairs
+pnpm db:seed                  # loads the ONCHigh curated pairs
 pnpm dev
 ```
 
 Verify: `curl http://localhost:3000/health`
 
-Full setup guide: [docs/development/local-setup.md](docs/development/local-setup.md)
+Full developer setup guide: [docs/development/local-setup.md](docs/development/local-setup.md).
 
 ---
 
@@ -86,7 +98,7 @@ Full API reference: [docs/api/overview.md](docs/api/overview.md)
 | OpenFDA labels | ~10,000+ | Public domain | v0.3 |
 | Community PRs | incremental | Apache 2.0 | ongoing |
 
-**License boundary:** melo-rx will never ingest CC BY-NC, CC BY-NC-SA, or any non-commercial-licensed data. Mixing such sources would contaminate the dataset license and break every downstream project that relies on it.
+**License boundary:** melorx will never ingest CC BY-NC, CC BY-NC-SA, or any non-commercial-licensed data. Mixing such sources would contaminate the dataset license and break every downstream project that relies on it.
 
 ---
 

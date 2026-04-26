@@ -1,0 +1,27 @@
+name: Docker edge
+
+# Builds and pushes the edge Docker image on every push to main.
+# Not triggered by release events — publish.yml handles those.
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: docker-edge-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  build:
+    name: Build & push edge image
+    uses: ./.github/workflows/_reusable-docker-build.yml
+    with:
+      push: true
+      tags: |
+        ghcr.io/${{ github.repository_owner }}/melorx:edge
+        ghcr.io/${{ github.repository_owner }}/melorx:sha-${{ github.sha }}

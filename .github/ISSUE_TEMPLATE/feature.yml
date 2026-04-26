@@ -1,0 +1,59 @@
+name: Feature request
+description: Propose a new capability or improvement.
+title: "feat: "
+labels: ["enhancement", "triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Please describe the problem first and the proposed solution second — that order helps reviewers.
+
+        Proposing a new drug-drug interaction *pair*? Open a PR using the
+        [community-interaction template](https://github.com/ruhwa-innovation-labs/melorx/blob/main/.github/PULL_REQUEST_TEMPLATE/community-interaction.md)
+        instead of a feature issue.
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: What problem does this solve?
+      description: "Who is affected, what they are trying to do, and why the current behaviour falls short."
+      placeholder: "As a [persona], I want to [action] so that [outcome]."
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed solution
+      description: "What you'd like to see. API surface, new flag, new endpoint, etc."
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description: "Other approaches you thought about and why they were set aside."
+
+  - type: dropdown
+    id: scope
+    attributes:
+      label: Scope
+      multiple: true
+      options:
+        - API (packages/api)
+        - '@melorx/client'
+        - CLI (@melorx/cli)
+        - Pipeline / ingestion
+        - Docker / deployment
+        - Documentation
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: contribution
+    attributes:
+      label: Contribution
+      options:
+        - label: I would be willing to open a pull request for this.
+          required: false

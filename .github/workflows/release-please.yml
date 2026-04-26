@@ -1,0 +1,37 @@
+name: Release Please
+
+# Opens (and keeps updated) a release PR based on Conventional Commits since
+# the last tagged release. Merging the PR creates a Git tag, a GitHub Release,
+# and fires the `release.published` event that publish.yml listens for.
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+
+jobs:
+  release-please:
+    name: Prepare release
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - uses: googleapis/release-please-action@v4
+        id: release
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          config-file: release-please-config.json
+          manifest-file: .release-please-manifest.json
+
+      - name: Summarise
+        if: ${{ steps.release.outputs.releases_created == 'true' }}
+        run: |
+          echo "## Releases created" >> "$GITHUB_STEP_SUMMARY"
+          echo '```json' >> "$GITHUB_STEP_SUMMARY"
+          echo '${{ toJSON(steps.release.outputs) }}' >> "$GITHUB_STEP_SUMMARY"
+          echo '```' >> "$GITHUB_STEP_SUMMARY"

@@ -1,0 +1,31 @@
+# CODEOWNERS — who must approve changes to a given path.
+#
+# Rules are matched top-to-bottom; the LAST match wins for each file path.
+# Teams require a team slug with `@<org>/<team>`. Individual users use `@<handle>`.
+
+# Default reviewer for everything not otherwise scoped.
+* @dbellamy
+
+# Database schema and migrations — an extra pair of eyes.
+/db/                                 @dbellamy
+/packages/core/src/db/               @dbellamy
+
+# Non-negotiable rules & disclaimer middleware — treat as high-risk.
+/packages/api/src/middleware/        @dbellamy
+/CLAUDE.md                            @dbellamy
+
+# OpenFDA extractor pattern corpus — edits directly affect extraction precision.
+/pipeline/sources/openfda/patterns.ts      @dbellamy
+/pipeline/sources/openfda/severity-map.ts  @dbellamy
+
+# Community contributions — maintainer review required for every new pair.
+/pipeline/sources/community/pairs/    @dbellamy
+
+# Release + CI config — one maintainer must approve workflow changes.
+/.github/                             @dbellamy
+/release-please-config.json           @dbellamy
+/.release-please-manifest.json        @dbellamy
+/Dockerfile                           @dbellamy
+
+# Public npm package — any change to the client surface is a maintainer decision.
+/packages/client/                     @dbellamy

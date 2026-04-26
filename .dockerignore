@@ -1,0 +1,51 @@
+# Build context excludes
+# -------------------------------------------------------------------
+# Anything not needed inside the image is excluded to keep the Docker
+# build context fast and to avoid shipping the 1+ GB RxNorm RRF files
+# that are licensed separately.
+
+# Node & toolchain state
+**/node_modules
+**/dist
+**/coverage
+**/.turbo
+**/.cache
+
+# Version control
+.git
+.gitignore
+.gitattributes
+
+# OS junk
+.DS_Store
+Thumbs.db
+
+# Editor state
+.vscode
+.idea
+*.swp
+
+# Environment files (operators supply their own at runtime)
+.env
+.env.*
+!.env.example
+
+# RxNorm source data — too big, licensed separately (UMLS), must be mounted at runtime
+pipeline/resolver/raw/
+pipeline/sources/*/raw/
+docs/external-sources/
+
+# Documentation (large, not needed at runtime)
+docs/
+
+# Testing artefacts
+**/__tests__/**/fixtures/*.large.*
+*.log
+
+# Docker / CI config
+Dockerfile
+.dockerignore
+.github/
+
+# Claude artefacts
+.claude/

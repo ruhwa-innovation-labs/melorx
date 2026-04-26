@@ -1,0 +1,42 @@
+{
+  "$schema": "https://raw.githubusercontent.com/googleapis/release-please/main/schemas/config.json",
+  "bootstrap-sha": "05602b8",
+  "release-type": "simple",
+  "include-component-in-tag": true,
+  "include-v-in-tag": true,
+  "separate-pull-requests": true,
+  "draft": false,
+  "prerelease": false,
+  "plugins": [
+    {
+      "type": "node-workspace",
+      "updatePeerDependencies": true
+    }
+  ],
+  "changelog-sections": [
+    { "type": "feat",     "section": "Features" },
+    { "type": "fix",      "section": "Bug Fixes" },
+    { "type": "perf",     "section": "Performance" },
+    { "type": "deps",     "section": "Dependencies" },
+    { "type": "revert",   "section": "Reverts" },
+    { "type": "docs",     "section": "Documentation", "hidden": false },
+    { "type": "refactor", "section": "Code Refactoring" },
+    { "type": "test",     "section": "Tests", "hidden": true },
+    { "type": "build",    "section": "Build System", "hidden": true },
+    { "type": "ci",       "section": "Continuous Integration", "hidden": true },
+    { "type": "chore",    "section": "Miscellaneous Chores", "hidden": true }
+  ],
+  "packages": {
+    ".": {
+      "release-type": "simple",
+      "component": "melorx",
+      "package-name": "melorx",
+      "extra-files": []
+    },
+    "packages/client": {
+      "release-type": "node",
+      "component": "client",
+      "package-name": "@melorx/client"
+    }
+  }
+}

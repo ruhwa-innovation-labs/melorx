@@ -1,0 +1,99 @@
+name: Scheduled OpenFDA ingest
+
+# Runs the OpenFDA bulk-download → extract → review-queue → promote cycle
+# on the first of each month. OPT-IN: the job is a no-op unless the
+# OPENFDA_DATABASE_URL repository secret is configured. That secret must
+# point at a Postgres instance the GH Actions runner can reach (the
+# self-hosted dataset DB, typically behind a tunnel or VPN).
+#
+# This workflow is designed to run without UMLS/RxNorm RRFs — the resolver
+# reads from whichever drug_concept rows already exist in the target DB.
+
+on:
+  schedule:
+    - cron: "0 2 1 * *"    # 02:00 UTC on the 1st of each month
+  workflow_dispatch:
+    inputs:
+      max_partitions:
+        description: Max OpenFDA partitions to download in this run (default 3)
+        required: false
+        default: "3"
+      force:
+        description: Re-ingest partitions even if checksum matches last run
+        required: false
+        type: boolean
+        default: false
+
+concurrency:
+  group: scheduled-ingest-openfda
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  check-config:
+    name: Check configuration
+    runs-on: ubuntu-latest
+    outputs:
+      configured: ${{ steps.check.outputs.configured }}
+    steps:
+      - id: check
+        env:
+          DB_URL_SET: ${{ secrets.OPENFDA_DATABASE_URL != '' }}
+        run: |
+          if [ "$DB_URL_SET" = "true" ]; then
+            echo "configured=true" >> "$GITHUB_OUTPUT"
+            echo "OPENFDA_DATABASE_URL is configured — proceeding with ingest."
+          else
+            echo "configured=false" >> "$GITHUB_OUTPUT"
+            echo "::warning::OPENFDA_DATABASE_URL is not configured — skipping scheduled ingest. Add it as a repository secret to enable."
+          fi
+
+  ingest:
+    name: Ingest + promote
+    needs: check-config
+    if: needs.check-config.outputs.configured == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+
+    env:
+      DATABASE_URL: ${{ secrets.OPENFDA_DATABASE_URL }}
+      NODE_ENV: production
+      LOG_LEVEL: info
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Apply pending migrations
+        run: pnpm db:migrate
+
+      - name: Ingest OpenFDA partitions
+        env:
+          MAX_PARTITIONS: ${{ inputs.max_partitions || '3' }}
+          FORCE: ${{ inputs.force && '--force' || '' }}
+        run: |
+          pnpm cli ingest all --max-partitions "$MAX_PARTITIONS" $FORCE
+
+      - name: Promote eligible pairs
+        run: pnpm db:promote
+
+      - name: Summary
+        if: always()
+        run: |
+          echo "## OpenFDA ingest summary" >> "$GITHUB_STEP_SUMMARY"
+          echo "- Max partitions: ${{ inputs.max_partitions || '3' }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "- Force: ${{ inputs.force || 'false' }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "- Scheduled at: $(date -u +'%Y-%m-%dT%H:%M:%SZ')" >> "$GITHUB_STEP_SUMMARY"
