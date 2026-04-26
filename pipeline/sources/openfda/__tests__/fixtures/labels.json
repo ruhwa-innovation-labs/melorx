@@ -1,0 +1,34 @@
+{
+  "simvastatin_label": {
+    "set_id": "SIM-001",
+    "effective_time": "20250301",
+    "subjectRxcuis": ["36567"],
+    "subjectName": "simvastatin",
+    "url": "https://dailymed.example/sim-001",
+    "interactionsText": "The combination of simvastatin with itraconazole may increase the risk of myopathy and rhabdomyolysis. Concomitant use with itraconazole has been associated with marked increases in simvastatin plasma concentrations. Simvastatin should not be used with clarithromycin."
+  },
+  "fluconazole_label": {
+    "set_id": "FLU-002",
+    "effective_time": "20260215",
+    "subjectRxcuis": ["4450"],
+    "subjectName": "fluconazole",
+    "url": "https://dailymed.example/flu-002",
+    "interactionsText": "Concomitant use with warfarin may increase anticoagulant effect. Monitor INR closely."
+  },
+  "warfarin_label_class_reference": {
+    "set_id": "WAR-003",
+    "effective_time": "20260101",
+    "subjectRxcuis": ["11289"],
+    "subjectName": "warfarin",
+    "url": "https://dailymed.example/war-003",
+    "interactionsText": "NSAIDs may reduce the antihypertensive effect of ACE inhibitors."
+  },
+  "unresolvable_drug_label": {
+    "set_id": "UNRES-004",
+    "effective_time": "20260101",
+    "subjectRxcuis": ["99999"],
+    "subjectName": "testdrug",
+    "url": "https://dailymed.example/unres-004",
+    "interactionsText": "Concomitant use with obscurinol may increase plasma levels."
+  }
+}
