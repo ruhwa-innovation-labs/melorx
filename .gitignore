@@ -9,4 +9,3 @@ dist/
 pipeline/sources/*/raw/
 pipeline/resolver/raw/
 external-sources/
-config.bat
