@@ -1,5 +1,5 @@
 {
-  "name": "melo-rx",
+  "name": "melorx",
   "private": true,
   "version": "0.1.0",
   "engines": {
@@ -7,7 +7,7 @@
     "pnpm": ">=9.0.0"
   },
   "scripts": {
-    "dev": "pnpm --filter @melo-rx/api dev",
+    "dev": "pnpm --filter @melorx/api dev",
     "build": "pnpm -r build",
     "test": "pnpm -r test",
     "typecheck": "pnpm -r typecheck",
@@ -16,7 +16,15 @@
     "db:migrate": "drizzle-kit migrate",
     "db:seed": "tsx --env-file=.env pipeline/sources/onc-high/seed.ts",
     "db:seed:classes": "tsx --env-file=.env pipeline/sources/onc-high/class-seed.ts",
-    "db:enrich": "tsx --env-file=.env pipeline/resolver/enrich.ts"
+    "db:seed:ci": "tsx --env-file=.env pipeline/sources/ci-fixture/seed.ts",
+    "db:ingest:community": "tsx --env-file=.env pipeline/sources/community/ingest.ts",
+    "db:ingest:openfda": "tsx --env-file=.env packages/cli/src/index.ts ingest partition",
+    "db:ingest:openfda:all": "tsx --env-file=.env packages/cli/src/index.ts ingest all",
+    "db:promote": "tsx --env-file=.env packages/cli/src/index.ts promote",
+    "db:enrich": "tsx --env-file=.env pipeline/resolver/enrich.ts",
+    "review": "tsx --env-file=.env packages/cli/src/index.ts review",
+    "cli": "tsx --env-file=.env packages/cli/src/index.ts",
+    "validate:community": "pnpm --filter @melorx/pipeline validate:community"
   },
   "devDependencies": {
     "drizzle-kit": "^0.30.0",
