@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeAll } from 'vitest'
-import { createDb } from '@melo-rx/core'
+import { createDb } from '@melorx/core'
 import { createApp } from '../app.js'
 
 describe('GET /v1/drugs/resolve', () => {
@@ -48,9 +48,8 @@ describe('GET /v1/drugs/resolve', () => {
 
   it('resolves an NDC to its ingredient concept', async () => {
     // Requires `pnpm db:seed:classes` + `pnpm db:enrich` so simvastatin has NDCs populated.
-    // The NDC used here (00006074031) is on simvastatin 10 MG Oral Tablet (RxCUI 314231)
-    // in the April 2026 RxNorm release.
-    const res = await app.request('/v1/drugs/resolve?q=00006074031')
+    // 00574171015 is a live (non-suppressed) simvastatin NDC in the current RxNorm release.
+    const res = await app.request('/v1/drugs/resolve?q=00574171015')
     expect(res.status).toBe(200)
     const body = await res.json() as { data: { rxcui: string } }
     expect(body.data.rxcui).toBe('36567')
