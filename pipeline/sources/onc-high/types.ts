@@ -1,5 +1,5 @@
-import { SOURCE_TYPES } from '@melo-rx/core'
-import type { InteractionSource } from '@melo-rx/core'
+import { SOURCE_TYPES } from '@melorx/core'
+import type { InteractionSource } from '@melorx/core'
 
 export interface OncHighEntry {
   drug1: { rxcui: string; name: string }

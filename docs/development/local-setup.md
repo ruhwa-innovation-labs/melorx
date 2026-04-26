@@ -23,8 +23,8 @@ A new engineer with Node.js 22+ and Docker installed should be able to follow th
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/ruhwa-innovation-labs/melo-rx.git
-cd melo-rx
+git clone https://github.com/ruhwa-innovation-labs/melorx.git
+cd melorx
 ```
 
 ### 2. Install dependencies
@@ -45,7 +45,7 @@ Open `.env` and fill in the required values:
 
 | Variable | Required | What to set |
 |----------|----------|-------------|
-| `DATABASE_URL` | Yes | `postgres://melo:melo@localhost:5432/melo_rx` |
+| `DATABASE_URL` | Yes | `postgres://melo:melo@localhost:5432/melorx` |
 | `RXNORM_API_BASE` | No | Leave as default — `https://rxnav.nlm.nih.gov/REST` |
 
 All other variables have defaults that are safe for local development. See [environment-variables.md](./environment-variables.md) for the full reference.
@@ -153,7 +153,7 @@ ports:
 
 Then update `DATABASE_URL` in your `.env`:
 ```
-DATABASE_URL=postgres://melo:melo@localhost:5433/melo_rx
+DATABASE_URL=postgres://melo:melo@localhost:5433/melorx
 ```
 
 ---

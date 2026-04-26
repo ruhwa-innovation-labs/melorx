@@ -1,6 +1,6 @@
 import { Hono } from 'hono'
 import { sql } from 'drizzle-orm'
-import type { Db } from '@melo-rx/core'
+import type { Db } from '@melorx/core'
 
 export function createHealthRouter(db: Db) {
   const router = new Hono()

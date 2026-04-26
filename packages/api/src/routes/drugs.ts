@@ -1,6 +1,6 @@
 import { Hono } from 'hono'
 import { zValidator } from '@hono/zod-validator'
-import { resolveQuerySchema, type Db } from '@melo-rx/core'
+import { resolveQuerySchema, type Db } from '@melorx/core'
 import { resolveDrug, getDrugByCui } from '../services/drug.service.js'
 
 export function createDrugsRouter(db: Db) {

@@ -1,7 +1,7 @@
 import type { MiddlewareHandler } from 'hono'
 
 export const DISCLAIMER =
-  'melo-rx is for informational purposes only. It does not constitute medical advice ' +
+  'melorx is for informational purposes only. It does not constitute medical advice ' +
   'and must not replace clinical judgment. Always consult a licensed healthcare professional.'
 
 /**

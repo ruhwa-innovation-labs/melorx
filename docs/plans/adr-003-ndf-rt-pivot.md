@@ -16,7 +16,7 @@ During v0.2 implementation an audit of the April 2026 RxNorm full monthly releas
 
 The SAB vocabularies present in the April 2026 release are `ATC`, `CVX`, `DRUGBANK`, `GS`, `MMSL`, `MMX`, `MTHCMSFRF`, `MTHSPL`, `NDDF`, `RXNORM`, `SNOMEDCT_US`, `USP`, and `VANDF` — all structural. NDF-RT is entirely absent.
 
-This tracks with NLM's public timeline: NDF-RT was deprecated in 2018 and its data was progressively removed from the RxNorm release cycle. The RxNav interaction API, which surfaced the NDF-RT `may_interact_with` pairs, was decommissioned on **January 2, 2024** — the same event that created the infrastructure gap that motivates melo-rx in the first place.
+This tracks with NLM's public timeline: NDF-RT was deprecated in 2018 and its data was progressively removed from the RxNorm release cycle. The RxNav interaction API, which surfaced the NDF-RT `may_interact_with` pairs, was decommissioned on **January 2, 2024** — the same event that created the infrastructure gap that motivates melorx in the first place.
 
 Obtaining NDF-RT data from archived NLM sources is possible in theory, but:
 

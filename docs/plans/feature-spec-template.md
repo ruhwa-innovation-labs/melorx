@@ -34,7 +34,7 @@
 
 ## PHI / Data Privacy Impact
 
-[Does this feature introduce any patient data? If yes, describe handling. For melo-rx: should
+[Does this feature introduce any patient data? If yes, describe handling. For melorx: should
 always be "None — this feature accepts only drug identifiers."]
 
 ## License Impact

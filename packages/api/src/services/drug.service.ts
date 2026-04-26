@@ -1,5 +1,5 @@
 import { eq, ilike, sql } from 'drizzle-orm'
-import { drugConcept, type Db } from '@melo-rx/core'
+import { drugConcept, type Db } from '@melorx/core'
 
 /**
  * Resolve a free-form drug query to a drug_concept row.

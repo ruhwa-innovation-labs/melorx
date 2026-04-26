@@ -1,5 +1,5 @@
 {
-  "name": "@melo-rx/api",
+  "name": "@melorx/api",
   "version": "0.1.0",
   "private": true,
   "type": "module",
@@ -14,8 +14,8 @@
   "dependencies": {
     "@hono/node-server": "^1.13.0",
     "@hono/zod-validator": "^0.4.0",
-    "@melo-rx/core": "workspace:*",
-    "drizzle-orm": "^0.45.2",
+    "@melorx/core": "workspace:*",
+    "drizzle-orm": "^0.39.0",
     "hono": "^4.6.0",
     "postgres": "^3.4.5"
   },

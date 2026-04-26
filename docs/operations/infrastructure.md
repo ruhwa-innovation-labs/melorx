@@ -57,8 +57,8 @@ required to avoid OOM kills during the OpenFDA bulk label processing step.
 
 ```bash
 # Clone the repository
-git clone https://github.com/ruhwa-innovation-labs/melo-rx.git
-cd melo-rx
+git clone https://github.com/ruhwa-innovation-labs/melorx.git
+cd melorx
 
 # Start all services
 docker compose up -d

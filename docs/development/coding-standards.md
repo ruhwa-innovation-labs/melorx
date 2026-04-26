@@ -1,6 +1,6 @@
 # Coding Standards
 
-These standards apply across all packages in the melo-rx monorepo. They are enforced in code review and where possible via lint rules and CI checks.
+These standards apply across all packages in the melorx monorepo. They are enforced in code review and where possible via lint rules and CI checks.
 
 ---
 
@@ -33,7 +33,7 @@ Define constants in `packages/core/src/constants.ts`. If you are typing the same
 if (confidence < 0.75) { ... }
 
 // good
-import { NLP_CONFIDENCE_THRESHOLD } from '@melo-rx/core/constants';
+import { NLP_CONFIDENCE_THRESHOLD } from '@melorx/core/constants';
 if (confidence < NLP_CONFIDENCE_THRESHOLD) { ... }
 ```
 
@@ -45,7 +45,7 @@ Never hardcode severity strings (`"moderate"`, `"serious"`, etc.) in application
 return { severity: 'serious' };
 
 // good
-import { Severity } from '@melo-rx/core';
+import { Severity } from '@melorx/core';
 return { severity: Severity.Serious };
 ```
 
@@ -103,7 +103,7 @@ Use the structured logger exported from `packages/core`. It respects `LOG_LEVEL`
 console.log('Resolved RxCUI:', rxcui);
 
 // good
-import { logger } from '@melo-rx/core';
+import { logger } from '@melorx/core';
 logger.debug({ rxcui }, 'Resolved RxCUI');
 ```
 

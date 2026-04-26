@@ -1,7 +1,7 @@
 import { readFileSync } from 'node:fs'
 import { resolve } from 'node:path'
 import { and, eq, or } from 'drizzle-orm'
-import { createDb, drugClassInteraction, drugConcept, logger } from '@melo-rx/core'
+import { createDb, drugClassInteraction, drugConcept, logger } from '@melorx/core'
 import {
   loadIngredientIndex,
   resolveIngredient,

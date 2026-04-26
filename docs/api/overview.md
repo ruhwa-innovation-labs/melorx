@@ -1,8 +1,8 @@
 # API Overview
 
-melo-rx exposes a versioned REST API for drug-drug interaction queries, identifier resolution, and dataset metadata. All endpoints return JSON.
+melorx exposes a versioned REST API for drug-drug interaction queries, identifier resolution, and dataset metadata. All endpoints return JSON.
 
-> **NOT FOR CLINICAL DECISION-MAKING.** melo-rx is a drug interaction reference and documentation tool. It does not constitute medical advice and must not replace clinical judgment. Always consult a licensed healthcare professional before making prescribing or dispensing decisions.
+> **NOT FOR CLINICAL DECISION-MAKING.** melorx is a drug interaction reference and documentation tool. It does not constitute medical advice and must not replace clinical judgment. Always consult a licensed healthcare professional before making prescribing or dispensing decisions.
 
 ---
 
@@ -15,7 +15,7 @@ melo-rx exposes a versioned REST API for drug-drug interaction queries, identifi
 For the hosted demo:
 
 ```
-https://api.melo-rx.dev/v1/...
+https://api.melorx.dev/v1/...
 ```
 
 Self-hosted deployments use whatever base URL the operator configures. The `/v1/` prefix is part of every API path regardless of deployment.
@@ -77,7 +77,7 @@ Resolves a drug name, NDC code, or ATC code to a canonical RxCUI and returns the
       "brand_names": ["Advil", "Motrin"]
     }
   },
-  "disclaimer": "melo-rx is for informational purposes only. It does not constitute medical advice and must not replace clinical judgment. Always consult a licensed healthcare professional.",
+  "disclaimer": "melorx is for informational purposes only. It does not constitute medical advice and must not replace clinical judgment. Always consult a licensed healthcare professional.",
   "meta": {
     "version": "1.0.0",
     "dataset_version": "2026-04-14",
@@ -155,7 +155,7 @@ Checks for a known drug-drug interaction between two drugs identified by RxCUI.
       }
     ]
   },
-  "disclaimer": "melo-rx is for informational purposes only. It does not constitute medical advice and must not replace clinical judgment. Always consult a licensed healthcare professional.",
+  "disclaimer": "melorx is for informational purposes only. It does not constitute medical advice and must not replace clinical judgment. Always consult a licensed healthcare professional.",
   "meta": {
     "version": "1.0.0",
     "dataset_version": "2026-04-14",
@@ -225,7 +225,7 @@ Pairs resolve independently. Successful pairs land in `data[]` in input order; u
   "errors": [
     { "index": 1, "error": "DRUG_NOT_FOUND", "drug": "notadrug99999" }
   ],
-  "disclaimer": "melo-rx is for informational purposes only. It does not constitute medical advice and must not replace clinical judgment. Always consult a licensed healthcare professional.",
+  "disclaimer": "melorx is for informational purposes only. It does not constitute medical advice and must not replace clinical judgment. Always consult a licensed healthcare professional.",
   "meta": {
     "version": "0.1.0",
     "dataset_version": "2026-04-19",
@@ -286,7 +286,7 @@ Returns all known interactions for a given drug, across all interaction pairs th
       }
     ]
   },
-  "disclaimer": "melo-rx is for informational purposes only. It does not constitute medical advice and must not replace clinical judgment. Always consult a licensed healthcare professional.",
+  "disclaimer": "melorx is for informational purposes only. It does not constitute medical advice and must not replace clinical judgment. Always consult a licensed healthcare professional.",
   "meta": {
     "version": "1.0.0",
     "dataset_version": "2026-04-14",
@@ -323,7 +323,7 @@ Returns all known drug classes present in the dataset, derived from the `drug_cl
       "...etc"
     ]
   },
-  "disclaimer": "melo-rx is for informational purposes only. It does not constitute medical advice and must not replace clinical judgment. Always consult a licensed healthcare professional.",
+  "disclaimer": "melorx is for informational purposes only. It does not constitute medical advice and must not replace clinical judgment. Always consult a licensed healthcare professional.",
   "meta": {
     "version": "1.0.0",
     "dataset_version": "2026-04-14",
@@ -359,7 +359,7 @@ Returns aggregate statistics about the dataset: total drug concepts, total inter
     "last_ingestion": "2026-04-01T02:00:00Z",
     "dataset_version": "2026-04-14"
   },
-  "disclaimer": "melo-rx is for informational purposes only. It does not constitute medical advice and must not replace clinical judgment. Always consult a licensed healthcare professional.",
+  "disclaimer": "melorx is for informational purposes only. It does not constitute medical advice and must not replace clinical judgment. Always consult a licensed healthcare professional.",
   "meta": {
     "version": "1.0.0",
     "dataset_version": "2026-04-14",
@@ -414,20 +414,20 @@ Note: this endpoint is at the root path — not prefixed with `/v1/`.
 
 Exposed metrics include:
 
-- `melo_rx_requests_total` — total requests by endpoint and status code
-- `melo_rx_request_duration_seconds` — request latency histogram
-- `melo_rx_interaction_queries_total` — interaction query count
-- `melo_rx_drug_concepts_total` — total drug concepts in the database
-- `melo_rx_interaction_pairs_total` — total interaction pairs in the database
+- `melorx_requests_total` — total requests by endpoint and status code
+- `melorx_request_duration_seconds` — request latency histogram
+- `melorx_interaction_queries_total` — interaction query count
+- `melorx_drug_concepts_total` — total drug concepts in the database
+- `melorx_interaction_pairs_total` — total interaction pairs in the database
 
 **Example response (excerpt)**
 
 ```
-# HELP melo_rx_requests_total Total HTTP requests
-# TYPE melo_rx_requests_total counter
-melo_rx_requests_total{endpoint="/v1/interactions",status="200"} 14832
-melo_rx_requests_total{endpoint="/v1/drugs/resolve",status="200"} 3201
-melo_rx_requests_total{endpoint="/v1/interactions",status="404"} 112
+# HELP melorx_requests_total Total HTTP requests
+# TYPE melorx_requests_total counter
+melorx_requests_total{endpoint="/v1/interactions",status="200"} 14832
+melorx_requests_total{endpoint="/v1/drugs/resolve",status="200"} 3201
+melorx_requests_total{endpoint="/v1/interactions",status="404"} 112
 ```
 
 ---
@@ -439,7 +439,7 @@ Every response from the API — success or error — wraps its payload in a cons
 ```json
 {
   "data": { ... },
-  "disclaimer": "melo-rx is for informational purposes only. It does not constitute medical advice and must not replace clinical judgment. Always consult a licensed healthcare professional.",
+  "disclaimer": "melorx is for informational purposes only. It does not constitute medical advice and must not replace clinical judgment. Always consult a licensed healthcare professional.",
   "meta": {
     "version": "1.0.0",
     "dataset_version": "2026-04-14",
@@ -462,7 +462,7 @@ Every response from the API — success or error — wraps its payload in a cons
 
 The `disclaimer` field is present in every response from every endpoint. It is injected by middleware at the server level and **cannot be suppressed, omitted, or overridden by the caller**. There is no query parameter, header, or API key scope that removes it.
 
-This is an intentional architectural constraint, not a limitation. melo-rx is a drug interaction reference tool. A missing "no interaction found" response, if acted upon without clinical judgment, could contribute to a preventable adverse drug event. The disclaimer exists to clearly frame the informational — not clinical — nature of the data returned, and to protect developers who build on melo-rx from unintentional over-reliance in user-facing workflows.
+This is an intentional architectural constraint, not a limitation. melorx is a drug interaction reference tool. A missing "no interaction found" response, if acted upon without clinical judgment, could contribute to a preventable adverse drug event. The disclaimer exists to clearly frame the informational — not clinical — nature of the data returned, and to protect developers who build on melorx from unintentional over-reliance in user-facing workflows.
 
 Applications are expected to surface this disclaimer appropriately to their users. It should not be hidden in a tooltip or collapsed by default in any context where drug interaction data is being displayed.
 
@@ -481,7 +481,7 @@ Errors follow the same envelope structure. The `data` field is replaced by an `e
     "message": "No drug concept found for RxCUI '99999'.",
     "status": 404
   },
-  "disclaimer": "melo-rx is for informational purposes only. It does not constitute medical advice and must not replace clinical judgment. Always consult a licensed healthcare professional.",
+  "disclaimer": "melorx is for informational purposes only. It does not constitute medical advice and must not replace clinical judgment. Always consult a licensed healthcare professional.",
   "meta": {
     "version": "1.0.0",
     "dataset_version": "2026-04-14",

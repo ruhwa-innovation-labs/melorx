@@ -1,4 +1,4 @@
-import type { InteractionSource } from '@melo-rx/core'
+import type { InteractionSource } from '@melorx/core'
 import type {
   ClassInteractionRow,
   ClassRuleEntry,

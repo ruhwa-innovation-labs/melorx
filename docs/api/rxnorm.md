@@ -2,7 +2,7 @@
 
 ## Purpose
 
-RxNorm is used as the canonical drug identifier system throughout melo-rx. Drug concepts in the database are keyed by **RxCUI** (RxNorm Concept Unique Identifier) — a stable, versioned identifier maintained by the U.S. National Library of Medicine (NLM).
+RxNorm is used as the canonical drug identifier system throughout melorx. Drug concepts in the database are keyed by **RxCUI** (RxNorm Concept Unique Identifier) — a stable, versioned identifier maintained by the U.S. National Library of Medicine (NLM).
 
 The Resolver Service translates any supported input — brand names, NDC codes, ATC codes, or free-text drug names — into a canonical RxCUI before any interaction query is executed against the database. This normalization step is mandatory: no interaction lookup bypasses the resolver.
 
@@ -154,7 +154,7 @@ If the NLM API is unreachable (network failure, timeout, or non-2xx response):
 2. If a cached entry exists in the local database, it is returned regardless of its age. The `meta` block in the response should not expose cache staleness to callers; this is an internal operational concern.
 3. If no cached entry exists and NLM is unreachable, the resolver returns a `DRUG_NOT_FOUND` error to the caller and logs the miss at `error` level with the identifier.
 
-The hosted demo exposes `/metrics` with a counter for NLM cache misses (`melo_rx_rxnorm_cache_miss_total`) so that elevated miss rates can be detected and alerted on.
+The hosted demo exposes `/metrics` with a counter for NLM cache misses (`melorx_rxnorm_cache_miss_total`) so that elevated miss rates can be detected and alerted on.
 
 ---
 

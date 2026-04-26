@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeAll } from 'vitest'
-import { createDb } from '@melo-rx/core'
+import { createDb } from '@melorx/core'
 import { createApp } from '../app.js'
 
 describe('GET /health', () => {

@@ -1,8 +1,8 @@
-# melo-rx — System Architecture
+# melorx — System Architecture
 
 ## Architecture Pattern
 
-melo-rx is a **modular monolith** organized as a **pnpm workspace**. All packages live in a single repository and share types from `packages/core`, but each package has a clearly defined responsibility boundary. The data pipeline, query engine, and delivery surface are deliberately kept separate so each can be replaced, extended, or scaled independently without touching the others.
+melorx is a **modular monolith** organized as a **pnpm workspace**. All packages live in a single repository and share types from `packages/core`, but each package has a clearly defined responsibility boundary. The data pipeline, query engine, and delivery surface are deliberately kept separate so each can be replaced, extended, or scaled independently without touching the others.
 
 ---
 
@@ -10,7 +10,7 @@ melo-rx is a **modular monolith** organized as a **pnpm workspace**. All package
 
 ```
 ┌──────────────────────────────────────────────────────────────────────────────┐
-│                                  melo-rx                                     │
+│                                  melorx                                     │
 │                                                                              │
 │  ┌─────────────────────────────────────────────────────────────────────┐    │
 │  │                        Ingestion Pipeline                           │    │
@@ -58,7 +58,7 @@ melo-rx is a **modular monolith** organized as a **pnpm workspace**. All package
 │                                  │                                          │
 │                                  ▼                                          │
 │  ┌─────────────────────────────────────────────────────────────────────┐  │
-│  │                     npm Package (@melo-rx/client)                   │  │
+│  │                     npm Package (@melorx/client)                   │  │
 │  │                                                                     │  │
 │  │   checkInteraction(drug1, drug2)                                    │  │
 │  │   resolveDrug(query)                                                │  │
@@ -74,7 +74,7 @@ melo-rx is a **modular monolith** organized as a **pnpm workspace**. All package
 ## Monorepo Layout
 
 ```
-melo-rx/
+melorx/
 ├── packages/
 │   ├── core/          # Canonical schema types, Zod validators, shared utilities
 │   │                  # All other packages import types from here — single source of truth
@@ -82,7 +82,7 @@ melo-rx/
 │   │                  # Disclaimer middleware, route handlers, Drizzle queries
 │   ├── cli/           # Dataset inspection and ingestion CLI
 │   │                  # Used for local development, seed runs, and pipeline debugging
-│   └── client/        # npm package published as @melo-rx/client
+│   └── client/        # npm package published as @melorx/client
 │                      # Thin typed wrapper over the REST API; zero runtime deps beyond fetch
 │
 ├── pipeline/
@@ -174,11 +174,11 @@ Storing class-level interactions as rules rather than pre-expanding them to all 
 
 ## What Is Intentionally Out of Scope
 
-The following concerns are explicitly excluded from the melo-rx architecture and will not be added:
+The following concerns are explicitly excluded from the melorx architecture and will not be added:
 
 - **PHI or patient data** — the API accepts only drug identifiers. No patient identifier, session, or health record is ever accepted, stored, or logged.
-- **Clinical certification** — melo-rx documents its clinical review process but does not claim certification of individual interaction pairs as clinically validated for prescribing decisions.
+- **Clinical certification** — melorx documents its clinical review process but does not claim certification of individual interaction pairs as clinically validated for prescribing decisions.
 - **CDSS functionality** — the system returns reference data with source citations. It does not generate prescribing recommendations, contraindication alerts framed as clinical conclusions, or dosing guidance.
-- **Consumer or patient-facing UI** — melo-rx is a developer infrastructure tool. No patient-facing interface, health portal integration, or consumer product is planned.
+- **Consumer or patient-facing UI** — melorx is a developer infrastructure tool. No patient-facing interface, health portal integration, or consumer product is planned.
 - **Real-time label monitoring** — OpenFDA label ingestion runs on a scheduled batch cycle. Webhook-based real-time label change detection is listed as a post-v1.0 scalability trigger, not a core feature.
 - **International identifier systems at v1.0** — dm+d (NHS), ATC-only lookups without RxCUI crosswalk, and non-US national formulary codes are not supported in v1.0. The architecture abstracts source adapters to enable this post-v1.0 without a core rewrite.

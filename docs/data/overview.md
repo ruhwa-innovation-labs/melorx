@@ -215,7 +215,7 @@ must approve before merge.
 No data from CC BY-NC, CC BY-NC-SA, research-only, or any non-commercial license may be
 ingested into the main dataset. This is not a preference — it is a hard architectural constraint.
 
-The melo-rx dataset is licensed Apache 2.0 to ensure that any developer, including those at
+The melorx dataset is licensed Apache 2.0 to ensure that any developer, including those at
 commercial healthcare companies, can redistribute it in their products without triggering a
 license violation. Mixing a single CC BY-NC source into the dataset would legally contaminate
 the entire dataset's redistribution terms, destroying the project's primary value proposition

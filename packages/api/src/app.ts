@@ -3,7 +3,7 @@ import { createHealthRouter } from './routes/health.js'
 import { createDrugsRouter } from './routes/drugs.js'
 import { createInteractionsRouter } from './routes/interactions.js'
 import { disclaimerMiddleware } from './middleware/disclaimer.js'
-import type { Db } from '@melo-rx/core'
+import type { Db } from '@melorx/core'
 
 export function createApp(db: Db) {
   const app = new Hono()

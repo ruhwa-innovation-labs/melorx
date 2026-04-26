@@ -1,5 +1,5 @@
 {
-  "name": "@melo-rx/core",
+  "name": "@melorx/core",
   "version": "0.1.0",
   "private": true,
   "type": "module",
@@ -14,7 +14,7 @@
   "dependencies": {
     "pino": "^9.0.0",
     "postgres": "^3.4.5",
-    "drizzle-orm": "^0.45.2",
+    "drizzle-orm": "^0.39.0",
     "zod": "^3.24.0"
   },
   "devDependencies": {

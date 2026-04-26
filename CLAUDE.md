@@ -1,4 +1,4 @@
-# melo-rx
+# melorx
 
 Open-source drug-drug interaction (DDI) API and dataset, built as a production-grade replacement for the NLM's decommissioned RxNav interaction endpoints. Licensed Apache 2.0 — commercially redistributable, self-hostable, and actively maintained.
 
@@ -32,7 +32,7 @@ Always use **pnpm**. Never use npm or yarn. This is a pnpm workspace monorepo.
 
 ```
 ┌──────────────────────────────────────────────────────────────────┐
-│                           melo-rx                                │
+│                           melorx                                │
 │                                                                  │
 │  ┌──────────────┐    ┌──────────────────┐    ┌───────────────┐  │
 │  │  Ingestion   │───▶│   PostgreSQL 16  │───▶│   REST API    │  │
@@ -42,7 +42,7 @@ Always use **pnpm**. Never use npm or yarn. This is a pnpm workspace monorepo.
 │         │                     │                      │          │
 │  ┌──────▼──────┐    ┌─────────▼────────┐    ┌───────▼───────┐  │
 │  │  Source     │    │  Resolver        │    │  npm Package  │  │
-│  │  Adapters   │    │  Service         │    │  @melo-rx/    │  │
+│  │  Adapters   │    │  Service         │    │  @melorx/    │  │
 │  │  ONCHigh    │    │  RxCUI ↔ NDC ↔   │    │  client       │  │
 │  │  OpenFDA    │    │  ATC ↔ brand     │    │               │  │
 │  │  NDF-RT     │    └──────────────────┘    └───────────────┘  │
@@ -53,12 +53,12 @@ Always use **pnpm**. Never use npm or yarn. This is a pnpm workspace monorepo.
 ### Monorepo Layout
 
 ```
-melo-rx/
+melorx/
 ├── packages/
 │   ├── core/          # Schema types, Zod validators, shared utilities
 │   ├── api/           # Hono REST API server
 │   ├── cli/           # Dataset inspection + ingestion CLI
-│   └── client/        # npm package (@melo-rx/client)
+│   └── client/        # npm package (@melorx/client)
 ├── pipeline/
 │   ├── sources/
 │   │   ├── onc-high/  # ONCHigh ETL adapter
@@ -93,7 +93,7 @@ melo-rx/
 
 9. **Class-level interactions expand at query time — never pre-materialize.** `drug_class_interaction` rules are resolved to concrete pairs dynamically by the query engine. No pre-expansion into `drug_interaction` rows for class-derived pairs. Pre-materialization creates stale combinatorial state.
 
-10. **melo-rx is an informational reference tool — not a clinical decision system.** Never use language in API responses, documentation, or code comments that implies clinical certification, legal compliance determination, prescribing authority, or replacement for clinical judgment. Response language presents documented facts, not clinical conclusions.
+10. **melorx is an informational reference tool — not a clinical decision system.** Never use language in API responses, documentation, or code comments that implies clinical certification, legal compliance determination, prescribing authority, or replacement for clinical judgment. Response language presents documented facts, not clinical conclusions.
 
 ---
 

@@ -1,8 +1,8 @@
-# melo-rx — Project Summary
+# melorx — Project Summary
 
 ## Elevator Pitch
 
-melo-rx is an Apache 2.0-licensed, self-hostable Drug-Drug Interaction (DDI) API and npm client that fills the infrastructure gap left by the NLM's shutdown of the RxNav DDI APIs on January 2, 2024.
+melorx is an Apache 2.0-licensed, self-hostable Drug-Drug Interaction (DDI) API and npm client that fills the infrastructure gap left by the NLM's shutdown of the RxNav DDI APIs on January 2, 2024.
 
 ---
 
@@ -14,7 +14,7 @@ The NLM decommissioned RxNav without announcing a replacement, leaving over 1,20
 
 ## Who Uses It and How
 
-- **App developers** — install `@melo-rx/client`, query a drug pair in under 5 minutes, ship a feature with zero recurring API cost and no license friction.
+- **App developers** — install `@melorx/client`, query a drug pair in under 5 minutes, ship a feature with zero recurring API cost and no license friction.
 - **Clinical systems integrators** (EHR/pharmacy vendors) — pull the Docker image, deploy behind their own infrastructure, audit source citations and provenance docs, and POST to `/v1/interactions/batch` for polypharmacy checks.
 - **Healthcare researchers** — download versioned dataset snapshots in CSV/JSON with full source citations under a publication-compatible Apache 2.0 license.
 - **Clinical pharmacists** — contribute curated interaction pairs via a structured JSON template with CI schema validation, without needing deep GitHub familiarity.
@@ -24,7 +24,7 @@ The NLM decommissioned RxNav without announcing a replacement, leaving over 1,20
 
 ## Business Model
 
-melo-rx is fully open-source under **Apache 2.0** (commercial use permitted, warranty disclaimed, patent grant included). There is no SaaS tier, no paid plan, and no authentication requirement for self-hosted deployments. A hosted demo API is provided for evaluation, rate-limited at 60 req/min unauthenticated. Infrastructure costs for the demo (~$27–55/month at modest scale) are covered by GitHub Sponsors or open-source fund contributions.
+melorx is fully open-source under **Apache 2.0** (commercial use permitted, warranty disclaimed, patent grant included). There is no SaaS tier, no paid plan, and no authentication requirement for self-hosted deployments. A hosted demo API is provided for evaluation, rate-limited at 60 req/min unauthenticated. Infrastructure costs for the demo (~$27–55/month at modest scale) are covered by GitHub Sponsors or open-source fund contributions.
 
 ---
 
@@ -49,7 +49,7 @@ melo-rx is fully open-source under **Apache 2.0** (commercial use permitted, war
 
 ## Explicit Non-Goals
 
-melo-rx is **not** any of the following:
+melorx is **not** any of the following:
 
 - A Clinical Decision Support System (CDSS) — it does not make prescribing recommendations.
 - A replacement for clinical pharmacist review — it provides reference data, not clinical determinations.

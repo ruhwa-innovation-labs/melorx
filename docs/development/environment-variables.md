@@ -1,6 +1,6 @@
 # Environment Variables
 
-All environment variables used by melo-rx. Never commit actual `.env` files. This document describes the shape and source of each variable only.
+All environment variables used by melorx. Never commit actual `.env` files. This document describes the shape and source of each variable only.
 
 ---
 
@@ -8,7 +8,7 @@ All environment variables used by melo-rx. Never commit actual `.env` files. Thi
 
 | Variable | Required / Optional | Source | Default | What It Controls |
 |----------|-------------------|--------|---------|-----------------|
-| `DATABASE_URL` | Required | `.env` | — | PostgreSQL connection string. Format: `postgres://user:pass@host:5432/melo_rx` |
+| `DATABASE_URL` | Required | `.env` | — | PostgreSQL connection string. Format: `postgres://user:pass@host:5432/melorx` |
 | `DATABASE_POOL_SIZE` | Optional | `.env` | `10` | Maximum number of concurrent database connections in the pool |
 | `RXNORM_API_BASE` | Optional | `.env` | `https://rxnav.nlm.nih.gov/REST` | Base URL for the NLM RxNorm REST API, used by the resolver service for identifier lookups |
 | `RXNORM_RATE_LIMIT_RPS` | Optional | `.env` | `20` | Maximum requests per second sent to the NLM RxNorm API to avoid throttling |
@@ -37,13 +37,13 @@ The following is the canonical `.env.example` file. Copy it to `.env` and replac
 
 ```dotenv
 # -------------------------------------------------------
-# melo-rx environment configuration
+# melorx environment configuration
 # Copy this file to .env and fill in required values.
 # Never commit .env to version control.
 # -------------------------------------------------------
 
 # Required — PostgreSQL connection string
-DATABASE_URL=postgres://melo:melo@localhost:5432/melo_rx
+DATABASE_URL=postgres://melo:melo@localhost:5432/melorx
 
 # Optional — database connection pool
 DATABASE_POOL_SIZE=10

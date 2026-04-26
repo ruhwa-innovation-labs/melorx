@@ -6,7 +6,7 @@ import {
   type InteractionResult,
   type InteractionSource,
   type Severity,
-} from '@melo-rx/core'
+} from '@melorx/core'
 import { resolveDrug } from './drug.service.js'
 
 type ResolvedDrug = Awaited<ReturnType<typeof resolveDrug>> & object

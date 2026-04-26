@@ -1,7 +1,7 @@
 # Canonical Schema Reference
 
 > **Document type:** Source of truth for database schema
-> **Scope:** All tables, types, indexes, and constraints in the melo-rx data layer
+> **Scope:** All tables, types, indexes, and constraints in the melorx data layer
 > **Authority:** Code must match this document. When there is a conflict between a Drizzle
 > migration and this document, this document wins and the migration must be corrected.
 

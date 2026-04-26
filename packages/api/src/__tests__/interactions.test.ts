@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeAll } from 'vitest'
-import { createDb } from '@melo-rx/core'
+import { createDb } from '@melorx/core'
 import { createApp } from '../app.js'
 
 describe('GET /v1/interactions', () => {
@@ -70,7 +70,7 @@ describe('GET /v1/interactions', () => {
     const body = await res.json() as { error: string; disclaimer: string }
     expect(body.error).toBe('DRUG_NOT_FOUND')
     expect(body.disclaimer).toBe(
-      'melo-rx is for informational purposes only. It does not constitute medical advice and must not replace clinical judgment. Always consult a licensed healthcare professional.',
+      'melorx is for informational purposes only. It does not constitute medical advice and must not replace clinical judgment. Always consult a licensed healthcare professional.',
     )
   })
 

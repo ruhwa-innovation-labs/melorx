@@ -1,4 +1,4 @@
-# melo-rx — Technology Stack Reference
+# melorx — Technology Stack Reference
 
 ## Full Stack Table
 
@@ -122,7 +122,7 @@ The following sources are permanently excluded regardless of their DDI coverage:
 | SIDER 4.1 | CC BY-NC 4.0 | Same; also frozen since 2015 |
 | DDInter | Research-only | Prohibits commercial use and redistribution |
 
-Ingesting any CC BY-NC or non-commercial-licensed data into the main dataset would infect the Apache 2.0 dataset license and make melo-rx unusable by commercial adopters. This rule is enforced at the maintainer review level and documented in the contributor guide. No automated check can fully substitute for maintainer awareness of this constraint.
+Ingesting any CC BY-NC or non-commercial-licensed data into the main dataset would infect the Apache 2.0 dataset license and make melorx unusable by commercial adopters. This rule is enforced at the maintainer review level and documented in the contributor guide. No automated check can fully substitute for maintainer awareness of this constraint.
 
 ---
 
@@ -130,7 +130,7 @@ Ingesting any CC BY-NC or non-commercial-licensed data into the main dataset wou
 
 ### Node.js
 
-melo-rx tracks the **Node.js LTS release cycle**. When a new LTS version enters Active LTS status (typically each October), the project upgrades within 60 days. When an LTS version reaches End of Life, it is removed from the supported matrix within 30 days. The minimum required Node.js version is declared in `package.json` under `engines.node` and enforced in CI.
+melorx tracks the **Node.js LTS release cycle**. When a new LTS version enters Active LTS status (typically each October), the project upgrades within 60 days. When an LTS version reaches End of Life, it is removed from the supported matrix within 30 days. The minimum required Node.js version is declared in `package.json` under `engines.node` and enforced in CI.
 
 ### TypeScript
 
@@ -138,7 +138,7 @@ TypeScript minor versions are adopted on release. TypeScript major versions are 
 
 ### PostgreSQL
 
-melo-rx targets the **current PostgreSQL major version** (16 at project inception). When a new PostgreSQL major version is released, migration is planned for within 6 months of its General Availability date. When the current target version reaches End of Life (5-year support cycle), the project upgrades before EOL. Major version upgrades are tested with a full ingestion pipeline run and integration test suite before the `docker-compose.yml` image pin is updated.
+melorx targets the **current PostgreSQL major version** (16 at project inception). When a new PostgreSQL major version is released, migration is planned for within 6 months of its General Availability date. When the current target version reaches End of Life (5-year support cycle), the project upgrades before EOL. Major version upgrades are tested with a full ingestion pipeline run and integration test suite before the `docker-compose.yml` image pin is updated.
 
 ### Drizzle ORM
 

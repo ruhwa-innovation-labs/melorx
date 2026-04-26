@@ -2,9 +2,9 @@
 
 ## Purpose
 
-OpenFDA drug label bulk downloads are used as the **long-tail data source** for drug-drug interaction (DDI) extraction in melo-rx (v0.3 of the ingestion pipeline). Where ONCHigh and NDF-RT provide curated, structured interaction records covering the most clinically significant pairs, OpenFDA labels expand coverage to the broader set of commercially available drugs — at the cost of requiring NLP extraction from unstructured narrative text.
+OpenFDA drug label bulk downloads are used as the **long-tail data source** for drug-drug interaction (DDI) extraction in melorx (v0.3 of the ingestion pipeline). Where ONCHigh and NDF-RT provide curated, structured interaction records covering the most clinically significant pairs, OpenFDA labels expand coverage to the broader set of commercially available drugs — at the cost of requiring NLP extraction from unstructured narrative text.
 
-The integration is one-directional: melo-rx downloads FDA drug label data, extracts interaction pairs from the `drug_interactions` field, scores them by confidence, and promotes high-confidence pairs into the interaction database after a review gate.
+The integration is one-directional: melorx downloads FDA drug label data, extracts interaction pairs from the `drug_interactions` field, scores them by confidence, and promotes high-confidence pairs into the interaction database after a review gate.
 
 ---
 
@@ -130,7 +130,7 @@ The `confidence` field on `drug_interaction` records derived from this pipeline 
 
 Extracted pairs with `confidence < 0.75` are written to a **review queue** and are **not served via the API** until a maintainer or designated clinical reviewer manually approves them.
 
-This threshold is intentional. FDA label `drug_interactions` text is unstructured and inconsistently formatted (see Known Limitations below). Serving low-confidence extractions without review would degrade the reliability of the dataset and undermine the trust that clinicians and clinical systems integrators place in melo-rx data.
+This threshold is intentional. FDA label `drug_interactions` text is unstructured and inconsistently formatted (see Known Limitations below). Serving low-confidence extractions without review would degrade the reliability of the dataset and undermine the trust that clinicians and clinical systems integrators place in melorx data.
 
 The review queue is stored in the database as a separate staging table. Approved pairs are promoted to `drug_interaction` with their `confidence` score intact. Rejected pairs are discarded with a logged reason.
 
@@ -140,7 +140,7 @@ Pairs at or above `0.75` confidence are eligible for automatic promotion, but ma
 
 ## License
 
-OpenFDA data is produced by the U.S. Food and Drug Administration, a U.S. government agency. U.S. government works are not eligible for copyright protection under 17 U.S.C. § 105 and are in the **public domain**. OpenFDA data is explicitly safe to ingest, redistribute, and incorporate into the melo-rx dataset under the project's Apache 2.0 license.
+OpenFDA data is produced by the U.S. Food and Drug Administration, a U.S. government agency. U.S. government works are not eligible for copyright protection under 17 U.S.C. § 105 and are in the **public domain**. OpenFDA data is explicitly safe to ingest, redistribute, and incorporate into the melorx dataset under the project's Apache 2.0 license.
 
 This is one of the key reasons OpenFDA labels are used as the long-tail source rather than alternatives such as DrugBank (CC BY-NC) or SIDER (CC BY-NC), which would contaminate the dataset license.
 

@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { SOURCE_TYPES } from '@melo-rx/core'
+import { SOURCE_TYPES } from '@melorx/core'
 
 export const oncHighEntrySchema = z.object({
   drug1: z.object({ rxcui: z.string().min(1), name: z.string().min(1) }),

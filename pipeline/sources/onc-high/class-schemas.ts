@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { SEVERITY_VALUES, SOURCE_TYPES } from '@melo-rx/core'
+import { SEVERITY_VALUES, SOURCE_TYPES } from '@melorx/core'
 
 const precipitantGroupSchema = z.object({
   class: z.string().min(1),

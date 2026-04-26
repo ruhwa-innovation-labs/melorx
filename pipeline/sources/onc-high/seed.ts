@@ -1,7 +1,7 @@
 import { readFileSync } from 'node:fs'
 import { resolve } from 'node:path'
 import { eq, or, and } from 'drizzle-orm'
-import { createDb, drugConcept, drugInteraction } from '@melo-rx/core'
+import { createDb, drugConcept, drugInteraction } from '@melorx/core'
 import { seedFileSchema } from './schemas.js'
 import { transformEntry } from './transform.js'
 

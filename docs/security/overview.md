@@ -2,7 +2,7 @@
 
 ## Threat Model
 
-### What melo-rx protects
+### What melorx protects
 
 **Data integrity of the DDI dataset.** The canonical interaction pairs, severity classifications,
 source citations, and confidence scores are the core value of the system. The threat model
@@ -22,14 +22,14 @@ HIPAA-defined PHI ever enter the request path, the database, or the logs. This i
 **design constraint enforced at the schema and validation layers**, not merely a policy
 statement.
 
-### What melo-rx does not protect
+### What melorx does not protect
 
-melo-rx does not contain patient data, prescribing records, clinical notes, or any data that
+melorx does not contain patient data, prescribing records, clinical notes, or any data that
 could be de-identified or re-identified. There is no patient data to protect. Threat scenarios
 involving PHI exfiltration, patient re-identification, HIPAA breach notification, or clinical
 record tampering are out of scope because the data surface does not exist.
 
-melo-rx is not a clinical decision support system (CDSS) and does not make prescribing
+melorx is not a clinical decision support system (CDSS) and does not make prescribing
 determinations. It does not protect against clinical misuse by downstream applications — that
 responsibility belongs to the integrating application and the clinicians who review its output.
 
@@ -37,7 +37,7 @@ responsibility belongs to the integrating application and the clinicians who rev
 
 ## Legal Positioning
 
-melo-rx is an **informational drug interaction reference tool**. It is not a clinical decision
+melorx is an **informational drug interaction reference tool**. It is not a clinical decision
 system, a CDSS, a prescribing authority, or a replacement for a licensed clinical pharmacist.
 
 This distinction is architectural, not cosmetic. The specific failure mode being mitigated is:
@@ -52,7 +52,7 @@ endpoint includes a `disclaimer` field injected by middleware. This injection oc
 framework layer and cannot be disabled by the API caller, query parameters, request headers,
 or configuration. The disclaimer text reads:
 
-> "melo-rx is for informational purposes only. It does not constitute medical advice and must
+> "melorx is for informational purposes only. It does not constitute medical advice and must
 > not replace clinical judgment. Always consult a licensed healthcare professional."
 
 **Response language presents documented facts, not clinical determinations.** API responses
@@ -111,7 +111,7 @@ for patient data. The Zod input schemas reject any input that is not a drug iden
 is no code path by which PHI could be submitted to or returned from the API — the fields
 simply do not exist.
 
-Operators deploying melo-rx in a healthcare environment should confirm that their request
+Operators deploying melorx in a healthcare environment should confirm that their request
 construction logic does not pass patient context in drug name fields (e.g., "warfarin [patient
 name]"). The API will accept and process only the drug identifier portion, but the full
 request URL would appear in access logs. Operators are responsible for ensuring their HTTP
@@ -198,7 +198,7 @@ deployment's own retention policy.
 
 ## License Boundary
 
-melo-rx is released under the Apache License 2.0. The license includes:
+melorx is released under the Apache License 2.0. The license includes:
 
 - An express grant of patent rights from all contributors
 - A disclaimer of all warranties, including warranties of merchantability and fitness for a

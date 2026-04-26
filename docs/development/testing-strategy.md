@@ -29,8 +29,8 @@ pnpm test --coverage
 Run a specific package:
 
 ```bash
-pnpm --filter @melo-rx/api test
-pnpm --filter @melo-rx/core test
+pnpm --filter @melorx/api test
+pnpm --filter @melorx/core test
 ```
 
 ---

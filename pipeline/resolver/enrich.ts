@@ -1,5 +1,5 @@
 import { eq } from 'drizzle-orm'
-import { createDb, drugConcept, logger } from '@melo-rx/core'
+import { createDb, drugConcept, logger } from '@melorx/core'
 import { loadIdentifierIndex } from './rxnorm-identifiers.js'
 import {
   mergeIdentifiers,

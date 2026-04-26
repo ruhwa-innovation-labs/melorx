@@ -1,4 +1,4 @@
-import type { InteractionSource, Severity } from '@melo-rx/core'
+import type { InteractionSource, Severity } from '@melorx/core'
 
 export interface ClassRulePrecipitantGroup {
   class: string

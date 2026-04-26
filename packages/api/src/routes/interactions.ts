@@ -5,7 +5,7 @@ import {
   interactionBatchRequestSchema,
   type Db,
   type InteractionResult,
-} from '@melo-rx/core'
+} from '@melorx/core'
 import { checkInteraction } from '../services/interaction.service.js'
 import { withDisclaimer, DISCLAIMER } from '../middleware/disclaimer.js'
 
