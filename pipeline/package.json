@@ -1,17 +1,26 @@
 {
-  "name": "@melo-rx/pipeline",
+  "name": "@melorx/pipeline",
   "version": "0.1.0",
   "private": true,
   "type": "module",
+  "exports": {
+    ".": "./index.ts"
+  },
   "scripts": {
     "test": "vitest run",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "validate:community": "tsx sources/community/bin/validate.ts"
   },
   "dependencies": {
-    "@melo-rx/core": "workspace:*",
+    "@melorx/core": "workspace:*",
+    "adm-zip": "^0.5.16",
+    "drizzle-orm": "^0.39.0",
+    "natural": "^8.0.0",
     "zod": "^3.24.0"
   },
   "devDependencies": {
+    "@types/adm-zip": "^0.5.7",
+    "tsx": "^4.19.0",
     "typescript": "^5.7.0",
     "vitest": "^2.0.0"
   }
