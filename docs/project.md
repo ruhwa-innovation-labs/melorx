@@ -1,4 +1,4 @@
-# melo-rx: Drug-Drug Interaction API — Core-to-Shell Project Definition
+# melorx: Drug-Drug Interaction API — Core-to-Shell Project Definition
 
 > **Status:** Pre-development | **Version:** 0.0.1 | **Date:** 2026-04-14
 
@@ -14,7 +14,7 @@ decommissioning of RxNav.
 
 **Vision:** Become the de facto open-source DDI infrastructure layer that powers healthcare
 applications globally. Every developer building a medication-aware product should be able to
-reach for `@melo-rx/client` the same way they reach for a date library — reliable, free,
+reach for `@melorx/client` the same way they reach for a date library — reliable, free,
 and production-grade.
 
 ---
@@ -52,7 +52,7 @@ or pays thousands per month for access they cannot redistribute in their own pro
 
 ### Unique Value Proposition (UVP)
 
-| Dimension | melo-rx | Existing Alternatives |
+| Dimension | melorx | Existing Alternatives |
 |-----------|---------|----------------------|
 | License | Apache 2.0 — commercial-friendly | CC BY-NC (DrugBank), proprietary, or frozen |
 | Maintenance | Active pipeline + community PRs | Paywalled updates or abandonware |
@@ -76,7 +76,7 @@ health utilities) and the specific characteristics of the healthcare developer e
 |--------|------------------------------|-----------|
 | DDI pairs covered | 5,000+ (v1.0 launch) | Concrete curated pairs + class-rule expansion from ONCHigh (14 rules → hundreds of concrete pairs at query time) + OpenFDA NLP long tail. NDF-RT removed — see [ADR-003](plans/adr-003-ndf-rt-pivot.md) |
 | Hosted demo API uptime | 99.5% | Standard for developer-facing APIs; below 99% degrades developer trust before adoption |
-| npm `@melo-rx/client` weekly downloads | 1,000+ | Conservative for a healthcare utility — comparable health npm packages (fhir.js, hl7parser) reach 500–2,000/wk within Year 1 |
+| npm `@melorx/client` weekly downloads | 1,000+ | Conservative for a healthcare utility — comparable health npm packages (fhir.js, hl7parser) reach 500–2,000/wk within Year 1 |
 | GitHub stars | 500+ | Achievable through HackerNews launch post + healthcare dev communities; used as social proof in downstream README |
 | Community PRs merged | 20+ | Quality signal: at least 20 externally-contributed interactions with valid source citations |
 | OpenFDA drug labels parsed | 10,000+ | Covers the majority of commercially available drugs in the US market |
@@ -95,7 +95,7 @@ the data pipeline, the query engine, and the delivery surface.
 
 ```
 ┌──────────────────────────────────────────────────────────────────┐
-│                           melo-rx                                │
+│                           melorx                                │
 │                                                                  │
 │  ┌──────────────┐    ┌──────────────────┐    ┌───────────────┐  │
 │  │  Ingestion   │───▶│   PostgreSQL 16  │───▶│   REST API    │  │
@@ -105,7 +105,7 @@ the data pipeline, the query engine, and the delivery surface.
 │         │                     │                      │          │
 │  ┌──────▼──────┐    ┌─────────▼────────┐    ┌───────▼───────┐  │
 │  │  Source     │    │  Resolver        │    │  npm Package  │  │
-│  │  Adapters   │    │  Service         │    │  @melo-rx/    │  │
+│  │  Adapters   │    │  Service         │    │  @melorx/    │  │
 │  │  ONCHigh    │    │  RxCUI ↔ NDC ↔   │    │  client       │  │
 │  │  OpenFDA    │    │  ATC ↔ brand     │    │               │  │
 │  └─────────────┘    └──────────────────┘    └───────────────┘  │
@@ -115,12 +115,12 @@ the data pipeline, the query engine, and the delivery surface.
 
 **Monorepo layout:**
 ```
-melo-rx/
+melorx/
 ├── packages/
 │   ├── core/          # Schema types, Zod validators, shared utilities
 │   ├── api/           # Hono REST API server
 │   ├── cli/           # Dataset inspection + ingestion CLI
-│   └── client/        # npm package (@melo-rx/client)
+│   └── client/        # npm package (@melorx/client)
 ├── pipeline/
 │   ├── sources/
 │   │   ├── onc-high/  # ONCHigh ETL adapter (curated pairs + class rules)
@@ -290,11 +290,11 @@ either costs money they don't have, returns data they can't redistribute, or sto
 maintained years ago. They decide to adopt based on README quality, a working code example, and
 a quick scan of the GitHub stars.
 
-**Clinical Systems Integrator** at an EHR or pharmacy management vendor needs melo-rx to pass
+**Clinical Systems Integrator** at an EHR or pharmacy management vendor needs melorx to pass
 an internal security and compliance review. They care deeply about data provenance — where each
 interaction record came from, who validated it, and when it was last updated. They will read the
 source citation audit trail before any other feature. Their blocker is usually procurement: the
-lack of a commercial entity behind melo-rx creates friction. The mitigation is a clear NOTICE
+lack of a commercial entity behind melorx creates friction. The mitigation is a clear NOTICE
 file, Apache 2.0 license with patent grant, documented clinical review, and Prometheus-compatible
 observability out of the box.
 
@@ -314,7 +314,7 @@ and a fast review SLA converts a one-time contributor into a recurring collabora
 **Healthcare Startup** building an MVP telehealth or medication management product has the most
 acute cost sensitivity. Their investor deck says "regulatory-compliant" but their runway says
 "don't pay for an API." Apache 2.0 + self-hosting is the answer they're looking for. Their
-secondary concern is that the dataset not rot: if they ship a feature powered by melo-rx, they
+secondary concern is that the dataset not rot: if they ship a feature powered by melorx, they
 need confidence the underlying data will still be accurate in 18 months.
 
 | Persona | Primary Goal | Key Concern | Conversion Trigger |
@@ -331,8 +331,8 @@ need confidence the underlying data will still be accurate in 18 months.
 
 #### App Developer (primary)
 ```
-1. Discovers melo-rx via npm search or GitHub
-2. pnpm add @melo-rx/client
+1. Discovers melorx via npm search or GitHub
+2. pnpm add @melorx/client
 3. Reads README — sees a 5-line usage example
 4. const result = await checkInteraction('lisinopril', 'ibuprofen')
 5. Receives structured response: severity, mechanism, management, disclaimer
@@ -343,7 +343,7 @@ need confidence the underlying data will still be accurate in 18 months.
 ```
 1. Evaluates via hosted demo API (rate-limited public endpoint)
 2. Reviews data provenance docs + source citation audit trail
-3. Pulls Docker image: docker pull melo-rx/api:1.0.0
+3. Pulls Docker image: docker pull melorx/api:1.0.0
 4. Deploys to internal infrastructure via docker-compose or Helm
 5. Configures EHR to POST /v1/interactions/batch for polypharmacy checks
 6. Monitors via /health and /metrics (Prometheus-compatible)
@@ -401,7 +401,7 @@ GET  /metrics                                   # Prometheus format
       }
     ]
   },
-  "disclaimer": "melo-rx is for informational purposes only. It does not constitute medical advice and must not replace clinical judgment. Always consult a licensed healthcare professional.",
+  "disclaimer": "melorx is for informational purposes only. It does not constitute medical advice and must not replace clinical judgment. Always consult a licensed healthcare professional.",
   "meta": {
     "version": "1.0.0",
     "dataset_version": "2026-04-14",
@@ -418,8 +418,8 @@ GET  /metrics                                   # Prometheus format
 |----------------|-------------------|-------|
 | RxNorm / NLM API | RxCUI identifier resolution (live + cached) | v0.1 |
 | OpenFDA Bulk Download | Drug label ingestion pipeline | v0.3 |
-| Docker Hub | Official image `melo-rx/api` | v1.0 |
-| npm Registry | `@melo-rx/client` package | v0.3 |
+| Docker Hub | Official image `melorx/api` | v1.0 |
+| npm Registry | `@melorx/client` package | v0.3 |
 | FHIR R4 | `MedicationKnowledge/$drug-interactions` endpoint | Post-v1.0 |
 | EHR/EMR (Epic, Cerner) | REST API + potential HL7 FHIR adapter | Post-v1.0 |
 | Prometheus / Grafana | `/metrics` endpoint for operational monitoring | v1.0 |
@@ -448,7 +448,7 @@ Concretely, this means:
 
 Comparators in the reference-data space (e.g., Drugs.com, Medscape Interaction Checker) handle
 this through clear "for informational purposes" framing and by prominently directing users to
-consult healthcare professionals. melo-rx should follow this pattern explicitly.
+consult healthcare professionals. melorx should follow this pattern explicitly.
 
 ### Security & Compliance
 
@@ -519,7 +519,7 @@ and a `docker-compose.yml` that cold-starts in under 30 seconds.
 - Source citations on every returned interaction
 - Non-suppressible `disclaimer` field on every response
 - Docker Compose for self-hosted deployment
-- `@melo-rx/client` npm package with TypeScript types
+- `@melorx/client` npm package with TypeScript types
 - README with a working 5-line code example
 
 **Should-have (v0.2–v0.3, fast-follow):**
@@ -556,16 +556,17 @@ and a `docker-compose.yml` that cold-starts in under 30 seconds.
 #### v0.2 — Resolver + Class Inheritance _(Weeks 4–6)_
 - [x] Identifier resolver: RxCUI ↔ NDC ↔ brand name via RxNorm local ingest (RXNCONSO / RXNSAT / RXNREL)
 - [x] `drug_class_interaction` schema + class-expansion query logic (ONCHigh rules)
-- [ ] `POST /v1/interactions/batch` endpoint
-- [ ] Vitest test suite: unit tests for resolver + integration tests against seeded DB
+- [x] `POST /v1/interactions/batch` endpoint
+- [x] Vitest test suite: unit tests for resolver + integration tests against seeded DB
 - ~~NDF-RT VA ingestion adapter~~ — removed per [ADR-003](plans/adr-003-ndf-rt-pivot.md); breadth split between ONCHigh class expansion (v0.2) and OpenFDA NLP (v0.3)
 
 #### v0.3 — Long Tail + Community _(Weeks 7–10)_
-- [ ] OpenFDA bulk label download + NLP interaction extraction pipeline
-- [ ] Confidence scoring on NLP-extracted pairs; review queue for `< 0.75`
-- [ ] Community contribution JSON format + PR template + CI validation
-- [ ] `@melo-rx/client` npm package with TypeScript types
-- [ ] Hosted demo deployment (Fly.io or Railway) with rate limiting
+- [x] OpenFDA NLP extractor + bulk download + SHA-256 verifier + partition ingest orchestrator — approach recorded in [ADR-004](plans/adr-004-openfda-nlp-approach.md)
+- [x] Confidence scoring + `drug_interaction_review` queue schema + `promote` job + `review` CLI — Rule #6 enforced at read (`interaction.service.ts`) and write (`promote.ts`), verified by 6 API integration tests
+- [x] Community contribution JSON format + PR template + CI validation
+- [x] `@melorx/client` npm package with TypeScript types (published under `next` tag as `0.3.0-rc.1`)
+- [x] `@melorx/cli` workspace consolidates `review`, `promote`, `ingest partition`, `ingest all` subcommands
+- [x] Self-hosted release pipeline — Docker images published to GHCR, `@melorx/client` published to npm via release-please, scheduled OpenFDA ingest workflow. See [`docs/operations/self-hosted-deployment.md`](../operations/self-hosted-deployment.md) and [`RELEASING.md`](../../RELEASING.md). _(Replaces the original "hosted demo" plan; deployment surface is self-hosted-first.)_
 
 #### v1.0 — Production-Ready _(Weeks 11–16)_
 - [ ] Clinical pharmacist review of full dataset — findings documented and resolved
@@ -589,7 +590,7 @@ Three international expansion opportunities exist once the US dataset reaches ma
 **WHO Essential Medicines & International DDI Standards.** The WHO's Model List of Essential
 Medicines covers ~500 core drugs used across 190+ countries. A `who_essential` flag on
 `drug_concept` records, combined with ATC code support already in the identifier resolver,
-would make melo-rx queryable by international teams without a full adapter rebuild. The
+would make melorx queryable by international teams without a full adapter rebuild. The
 WHO Collaborating Centre for Drug Statistics Methodology publishes ATC classification
 updates annually — an ingestible, public-domain source.
 
@@ -605,7 +606,7 @@ are public-domain sources with UK-specific DDI reporting. The NHS Dictionary of 
 Devices (dm+d) uses a SNOMED-CT-based identifier system, requiring a dm+d ↔ RxCUI crosswalk
 for the resolver — significant but well-documented mapping work.
 
-The long-term strategic position: melo-rx becomes the **"RxNorm for DDI data"** — the
+The long-term strategic position: melorx becomes the **"RxNorm for DDI data"** — the
 identifier-agnostic, jurisdiction-aware open standard that any drug information system can
 query regardless of whether it speaks RxCUI, ATC, dm+d, or a national formulary code.
 
@@ -621,7 +622,7 @@ query regardless of whether it speaks RxCUI, ATC, dm+d, or a national formulary 
 | Data license | Apache 2.0 | MIT | Patent grant clause relevant for healthcare software |
 | Phase 1 data source | ONCHigh | DrugBank, SIDER | Only public domain + clinician-curated option |
 | Identifier canon | RxCUI | NDC, ATC | RxNorm is the US standard; others resolved to it |
-| npm package scope | `@melo-rx/client` | `melo-rx` | Scoped packages signal organizational ownership + future packages |
+| npm package scope | `@melorx/client` | `melorx` | Scoped packages signal organizational ownership + future packages |
 
 ---
 
@@ -645,7 +646,7 @@ The single most important product decision is **positioning as a reference tool,
 clinical decision system.** Every architectural choice — the non-suppressible disclaimer
 middleware, the `confidence` field on NLP-extracted pairs, the mandatory `sources[]` on every
 interaction, the "borderline" flagging on ambiguous readings — reinforces this boundary.
-Done correctly, melo-rx protects developers from accidental over-reliance while being
+Done correctly, melorx protects developers from accidental over-reliance while being
 genuinely useful for the informational display cases that make up the vast majority of
 real-world queries.
 
