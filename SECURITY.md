@@ -1,6 +1,6 @@
 # Security Policy
 
-We take security seriously at Warp and appreciate the efforts of security researchers who help keep our users safe.
+We take security seriously at Ruhwa Innovation Labs and appreciate the efforts of security researchers who help keep our users safe.
 
 ## Reporting a Vulnerability
 

@@ -1,6 +1,5 @@
 node_modules/
 dist/
-.env
 *.log
 .DS_Store
 *.tsbuildinfo
@@ -8,3 +7,4 @@ dist/
 # Bulk source data — downloaded, not committed
 pipeline/sources/*/raw/
 pipeline/resolver/raw/
+config.bat
