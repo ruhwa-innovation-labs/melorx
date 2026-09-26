@@ -22,7 +22,7 @@
 # `pnpm db:enrich` must mount the RRF files into /app/pipeline/resolver/raw.
 # ------------------------------------------------------------------------------
 
-FROM node:22-alpine AS deps
+FROM node:26-alpine AS deps
 
 RUN corepack enable && corepack prepare pnpm@10.28.2 --activate
 RUN apk add --no-cache tini
@@ -42,7 +42,7 @@ RUN pnpm install --frozen-lockfile --prefer-offline
 
 # ------------------------------------------------------------------------------
 
-FROM node:22-alpine AS runtime
+FROM node:26-alpine AS runtime
 
 RUN corepack enable && corepack prepare pnpm@10.28.2 --activate
 RUN apk add --no-cache tini curl
