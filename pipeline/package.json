@@ -16,7 +16,7 @@
     "adm-zip": "^0.5.16",
     "drizzle-orm": "^0.39.0",
     "natural": "^8.0.0",
-    "zod": "^3.24.0"
+    "zod": "^4.6.5"
   },
   "devDependencies": {
     "@types/adm-zip": "^0.5.7",
