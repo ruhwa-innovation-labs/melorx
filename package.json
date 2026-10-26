@@ -27,8 +27,8 @@
     "validate:community": "pnpm --filter @melorx/pipeline validate:community"
   },
   "devDependencies": {
-    "drizzle-kit": "^0.30.0",
-    "tsx": "^4.19.0",
+    "drizzle-kit": "^0.31.11",
+    "tsx": "^4.23.15",
     "typescript": "^5.7.0"
   }
 }
